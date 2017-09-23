@@ -18,7 +18,7 @@ cov-cli: test
 
 .PHONY: test
 test: build
-	nyc --reporter=json mocha --ui tdd --use_strict --compilers js:babel-core/register dist/test/**/*.test.js
+	nyc --reporter=json mocha --ui tdd --use_strict dist/test/**/*.test.js
 
 .PHONY: build
 build: transpile
