@@ -1,8 +1,6 @@
 # Bishop
 [![Build Status][travis-image]][travis-url] [![Coverage][codecov-image]][codecov-url] [![Dependencies][david-image]][david-url] [![Dev Dependencies][david-dev-image]][david-dev-url]
 
-Hello World with npm/typescript
-
 [travis-url]: https://travis-ci.org/serianox/bishop
 [travis-image]: https://travis-ci.org/serianox/bishop.svg
 
