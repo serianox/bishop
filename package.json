@@ -23,10 +23,10 @@
   "license": "WTFPL",
   "repository": {
     "type": "git",
-    "url": "https://github.com/serianox/typescript-hello.git"
+    "url": "https://github.com/serianox/bishop.git"
   },
   "bugs": {
-    "url": "https://github.com/serianox/typescript-hello/issues"
+    "url": "https://github.com/serianox/bishop/issues"
   },
   "devDependencies": {
     "@types/chai": "^4.0.4",
