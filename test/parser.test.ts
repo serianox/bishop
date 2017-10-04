@@ -18,14 +18,20 @@ suite("Parser", () => {
 ; bar`));
         });
         test("should parse single task", () => {
+            assert.isTrue(parseConfiguration(`task :`));
+        });
+        test("should parse single task with one dependency", () => {
+            assert.isTrue(parseConfiguration(`task : depa`));
+        });
+        test("should parse single task with many dependencies", () => {
             assert.isTrue(parseConfiguration(`task : depa depb depn`));
         });
         test("should parse single task with one option", () => {
-            assert.isTrue(parseConfiguration(`task : depa depb depn
+            assert.isTrue(parseConfiguration(`task :
     opta = vala`));
         });
         test("should parse single task with two options", () => {
-            assert.isTrue(parseConfiguration(`task : depa depb depn
+            assert.isTrue(parseConfiguration(`task :
     opta = vala
     optb = valb`));
         });
