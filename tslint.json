@@ -3,14 +3,16 @@
     "extends": "tslint:recommended",
     "jsRules": {},
     "rules": {
+        "arrow-parens": false,
+        "max-line-length": false,
+        "max-classes-per-file": false,
         "member-ordering": [
             true,
             {
                 "alphabetize": false
             }
         ],
-        "typedef": false,
-        "max-line-length": false
+        "typedef": false
     },
     "rulesDirectory": []
 }
