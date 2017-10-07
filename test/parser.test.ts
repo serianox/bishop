@@ -39,16 +39,22 @@ suite("Parser", () => {
     optb = valb`));
         });
         test("should parse complete example", () => {
-            assert.isTrue(parseConfiguration(`; comment
+            assert.isTrue(parseConfiguration(`
 ; comment
-task1 : task2
+; comment
+task1 : task2 task3
     opta = vala
     optb = valb
+
+
 ; comment
 ; comment
-task2 :
-    opta = vala
-    optb = valb`));
+task2: ;
+    opta=vala 
+    optb=valb ;
+
+task3 :
+`));
         });
     });
 });

@@ -14,14 +14,13 @@ class Option {
 
 const name = p.regexp(/[a-zA-Z][a-zA-Z0-9]*([-_.][a-zA-Z0-9]+)*/);
 const rest = p.regexp(/[^\r\n\u0085\u2028\u2029]*/).map(_ => _.trim());
+const empty = p.string("");
 const colon = p.string(":");
 const semicolon = p.string(";");
 const equal = p.string("=");
 const indent = p.regexp(/[ \f\t\v\u00A0]+/);
 const whitespace = p.regexp(/[ \f\t\v\u00A0]*/);
-const whitespace1 = p.regexp(/[ \f\t\v\u00A0]/);
 const newline = p.regexp(/[\n\u0085\u2028\u2029]|\r\n?/);
-const newlinen = p.regexp(/([\n\u0085\u2028\u2029]|\r\n?)*/);
 
 const comment = semicolon.then(rest).map(_ => new Comment(_));
 
@@ -29,7 +28,7 @@ const declaration = p.seq(name, whitespace, colon, whitespace, p.sepBy(name, whi
 
 const option = p.seq(indent, name, whitespace, equal, rest).map(_ => new Option(_[1], _[4]));
 
-const configuration = p.seq(p.sepBy(p.alt(comment, declaration, option), newline), p.eof);
+const configuration = p.seq(p.sepBy(p.seq(p.alt(declaration, option, whitespace), p.alt(comment, empty)), newline), p.eof);
 
 /**
  * Generate an AST from a configuration file.
