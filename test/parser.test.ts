@@ -30,6 +30,9 @@ suite("Parser", () => {
             assert.isTrue(parseConfiguration(`task :
     opta = vala`));
         });
+        test("should parse FOO", () => {
+            assert.isTrue(parseConfiguration(`    opta = vala`));
+        });
         test("should parse single task with two options", () => {
             assert.isTrue(parseConfiguration(`task :
     opta = vala
@@ -37,7 +40,7 @@ suite("Parser", () => {
         });
         test("should parse complete example", () => {
             assert.isTrue(parseConfiguration(`
-task:depa depb depn 
+task:depa depb depn
     opta = vala
     optb=valb`));
         });

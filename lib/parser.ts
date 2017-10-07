@@ -13,7 +13,7 @@ class Option {
 }
 
 const name = p.regexp(/[a-zA-Z][a-zA-Z0-9]*([-_.][a-zA-Z0-9]+)*/).map(_ => _[0]);
-const rest = p.regexp(/[^\r\n\u0085\u2028\u2029]*/).map(_ => _[0]);
+const rest = p.regexp(/[^\r\n\u0085\u2028\u2029]*/).map(_ => _[0].trim());
 const colon = p.string(":").q;
 const semicolon = p.string(";").q;
 const equal = p.string("=").q;
@@ -23,12 +23,13 @@ const whitespace1 = p.regexp(/[ \f\t\v\u00A0]/).q;
 const newline = p.regexp(/[\n\u0085\u2028\u2029]|\r\n?/).q;
 const newlinen = p.regexp(/([\n\u0085\u2028\u2029]|\r\n?)*/).q;
 
-const comment = semicolon.then(rest).map(_ => new Comment(_.trim()));
+const comment = semicolon.then(rest).map(_ => new Comment(_));
 
-const option = indent.then(name).then(whitespace).then(equal).then(rest).map(_ => new Option(_[0], _[1].trim()));
-const declaration = name.then(whitespace).then(colon).then(name.manySepBy(whitespace)).map(_ => new Declaration(_[0], _[1]));
+const option = indent.then(name).then(whitespace).then(equal).then(rest).map(_ => new Option(_[0], _[1]));
+// const declaration = name.then(whitespace).then(colon)/*.then(name.manySepBy(whitespace)).map(_ => new Declaration(_[0], _[1]))*/;
+const declaration = p.seq(name, whitespace, colon, whitespace, name.manySepBy(whitespace), whitespace).map(_ => new Declaration(_[0], _[1]));
 
-const configuration = comment.or(declaration).or(option).manySepBy(newlinen).between(newlinen).then(p.eof);
+const configuration = p.any(comment, declaration, option).manySepBy(newline).between(newlinen).then(p.eof);
 
 /**
  * Generate an AST from a configuration file.
@@ -45,7 +46,7 @@ export const parseConfiguration = (input: string): boolean  => {
             return true;
         }
         default: {
-            p.visualizer.visualize(result.trace);
+            console.log(p.visualizer.visualize(result.trace));
             console.log(result.trace.reason);
             console.log(result.trace.location);
             return false;
