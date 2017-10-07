@@ -1,4 +1,4 @@
-import { Parjs as p, ReplyKind } from "parjs";
+import * as p from "parsimmon";
 
 class Comment {
     constructor(public content: string) {}
@@ -12,24 +12,24 @@ class Option {
     constructor(public name: string, public value: string) {}
 }
 
-const name = p.regexp(/[a-zA-Z][a-zA-Z0-9]*([-_.][a-zA-Z0-9]+)*/).map(_ => _[0]);
-const rest = p.regexp(/[^\r\n\u0085\u2028\u2029]*/).map(_ => _[0].trim());
-const colon = p.string(":").q;
-const semicolon = p.string(";").q;
-const equal = p.string("=").q;
-const indent = p.regexp(/[ \f\t\v\u00A0]+/).q;
-const whitespace = p.regexp(/[ \f\t\v\u00A0]*/).q;
-const whitespace1 = p.regexp(/[ \f\t\v\u00A0]/).q;
-const newline = p.regexp(/[\n\u0085\u2028\u2029]|\r\n?/).q;
-const newlinen = p.regexp(/([\n\u0085\u2028\u2029]|\r\n?)*/).q;
+const name = p.regexp(/[a-zA-Z][a-zA-Z0-9]*([-_.][a-zA-Z0-9]+)*/);
+const rest = p.regexp(/[^\r\n\u0085\u2028\u2029]*/).map(_ => _.trim());
+const colon = p.string(":");
+const semicolon = p.string(";");
+const equal = p.string("=");
+const indent = p.regexp(/[ \f\t\v\u00A0]+/);
+const whitespace = p.regexp(/[ \f\t\v\u00A0]*/);
+const whitespace1 = p.regexp(/[ \f\t\v\u00A0]/);
+const newline = p.regexp(/[\n\u0085\u2028\u2029]|\r\n?/);
+const newlinen = p.regexp(/([\n\u0085\u2028\u2029]|\r\n?)*/);
 
 const comment = semicolon.then(rest).map(_ => new Comment(_));
 
-const option = indent.then(name).then(whitespace).then(equal).then(rest).map(_ => new Option(_[0], _[1]));
-// const declaration = name.then(whitespace).then(colon)/*.then(name.manySepBy(whitespace)).map(_ => new Declaration(_[0], _[1]))*/;
-const declaration = p.seq(name, whitespace, colon, whitespace, name.manySepBy(whitespace), whitespace).map(_ => new Declaration(_[0], _[1]));
+const declaration = p.seq(name, whitespace, colon, whitespace, p.sepBy(name, whitespace), whitespace).map(_ => new Declaration(_[0], _[4]));
 
-const configuration = p.any(comment, declaration, option).manySepBy(newline).between(newlinen).then(p.eof);
+const option = p.seq(indent, name, whitespace, equal, rest).map(_ => new Option(_[1], _[4]));
+
+const configuration = p.seq(p.sepBy(p.alt(comment, declaration, option), newline), p.eof);
 
 /**
  * Generate an AST from a configuration file.
@@ -40,15 +40,14 @@ const configuration = p.any(comment, declaration, option).manySepBy(newline).bet
 export const parseConfiguration = (input: string): boolean  => {
     console.log(input);
     const result = configuration.parse(input);
-    switch (result.kind) {
-        case ReplyKind.OK: {
-            console.log(JSON.stringify(result.value, null, 4));
+    switch (result.status) {
+        case true: {
+            console.log(JSON.stringify(result.value, undefined, 4));
             return true;
         }
-        default: {
-            console.log(p.visualizer.visualize(result.trace));
-            console.log(result.trace.reason);
-            console.log(result.trace.location);
+        case false: {
+            console.log(result.expected);
+            console.log(result.index);
             return false;
         }
     }
