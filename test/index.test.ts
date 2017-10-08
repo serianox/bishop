@@ -1,5 +1,5 @@
 import { assert } from "chai";
-import { Task, buildTasks } from "../lib/index";
+import { buildTasks, Task } from "../lib/index";
 
 suite("Functional", () => {
     suite("#hello()", () => {
