@@ -18,14 +18,18 @@ export class Task {
 
 export const buildTasks = (ast: AST): Map<string, Task> | null => {
     const map = new Map<string, Task>();
-    const tasks: Declaration[] = ast.filter((_): _ is Declaration => _ instanceof Declaration);
+    const declarations: Declaration[] = ast.filter((_): _ is Declaration => _ instanceof Declaration);
 
-    tasks.map(_ => {
+    const tasks = declarations.map(_ => {
         const name = _.name;
         const task = new Task(name, _.dependencies, map);
         map.set(name, task);
         return task;
     });
+
+    if (!tasks.reduce((a, v) => a && v.resolve(), true)) {
+        return null;
+    }
 
     return map;
 };
