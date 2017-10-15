@@ -1,32 +1,31 @@
+import { AST, Comment, Declaration, Option } from "./parser";
+
 export class Task {
-    private name: string;
-    private dependencies: Task[];
+    public constructor(public readonly name: string, private readonly dependenciesName: string[], private readonly tasks: Map<string, Task>) {}
 
-    public constructor(name: string, dependencies: Task[]) {
-        this.name = name;
-        this.dependencies = dependencies;
-    }
+    public dependencies: Task[];
 
-    public getDependencies(): Task[] {
-        return [].concat.apply(this.dependencies, this.dependencies.map(_ => _.getDependencies()));
+    public resolve(): boolean {
+        if (!this.dependenciesName.reduce((a, v) => a && this.tasks.has(v), true)) {
+            return false;
+        }
+
+        this.dependencies = this.dependenciesName.map(_ => this.tasks.get(_)!);
+
+        return true;
     }
 }
 
-export const buildTasks = (tasks: Array<[string, string[]]>): Task[] => {
+export const buildTasks = (ast: AST): Map<string, Task> | null => {
     const map = new Map<string, Task>();
+    const tasks: Declaration[] = ast.filter((_): _ is Declaration => _ instanceof Declaration);
 
-    return buildTasksRec(tasks, map);
-};
+    tasks.map(_ => {
+        const name = _.name;
+        const task = new Task(name, _.dependencies, map);
+        map.set(name, task);
+        return task;
+    });
 
-const buildTasksRec = (tasks: Array<[string, string[]]>, tasks2: Map<string, Task>): Task[] => {
-    const [head, ...tail] = tasks;
-
-    if (!head) {
-        return [];
-    }
-
-    const task = new Task(head[0], head[1].map(_ => tasks2.get(_) || new Task("a", [])));
-    tasks2.set(head[0], task);
-
-    return [task].concat(buildTasksRec(tail, tasks2));
+    return map;
 };
