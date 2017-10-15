@@ -28,7 +28,7 @@ const option = p.seq(indent, name, whitespace, equal, rest).map(_ => new Option(
 
 const declaration = p.seq(name, whitespace, colon, whitespace, p.sepBy(name, whitespace), whitespace, newline.then(option).many()).map(_ => new Declaration(_[0], _[4], _[6]));
 
-const configuration = newline.many().then(p.sepBy(p.alt(declaration, comment), newline.atLeast(1))).skip(newline.many()).skip(p.eof);
+const configuration = newline.many().then(p.sepBy(p.alt<Declaration | Comment>(declaration, comment), newline.atLeast(1))).skip(newline.many()).skip(p.eof);
 
 /**
  * Generate an AST from a configuration file.
@@ -36,7 +36,7 @@ const configuration = newline.many().then(p.sepBy(p.alt(declaration, comment), n
  * @param input the configuration as a `string`
  * @return the result AST
  */
-export const parseConfiguration = (input: string): boolean  => {
+export const parseConfiguration = (input: string): boolean => {
     console.log(input);
     const result = configuration.parse(input);
     switch (result.status) {
