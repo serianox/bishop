@@ -1,6 +1,7 @@
 # Bishop
 [![Build Status][travis-image]][travis-url]
-[![Coverage][codecov-image]][codecov-url] 
+[![Source Coverage][codecov-image]][codecov-url]
+[![Test Coverage][codeclimate-image]][codeclimate-url]
 [![Dependency Status][dependencyci-image]][dependencyci-url]
 
 [travis-url]: https://travis-ci.org/serianox/bishop
@@ -8,6 +9,9 @@
 
 [codecov-url]: https://codecov.io/gh/serianox/bishop
 [codecov-image]: https://codecov.io/gh/serianox/bishop/branch/master/graph/badge.svg
+
+[codeclimate-url]: https://codeclimate.com/github/serianox/bishop/test_coverage
+[codeclimate-image]: https://api.codeclimate.com/v1/badges/9873c1075d2af8ade0ac/test_coverage
 
 [dependencyci-url]: https://dependencyci.com/github/serianox/bishop
 [dependencyci-image]: https://dependencyci.com/github/serianox/bishop/badge
