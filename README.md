@@ -8,8 +8,7 @@
 [travis-image]: https://travis-ci.org/serianox/bishop.svg
 
 [codecov-url]: https://codecov.io/gh/serianox/bishop
-[codecov-image]: https://img.shields.io/codecov/c/github/serianox/bishop.svg
-<!-- https://codecov.io/gh/serianox/bishop/branch/master/graph/badge.svg -->
+[codecov-image]: https://codecov.io/gh/serianox/bishop/branch/master/graph/badge.svg
 
 [codeclimate-url]: https://codeclimate.com/github/serianox/bishop/issues
 [codeclimate-image]: https://img.shields.io/codeclimate/issues/github/serianox/bishop.svg
