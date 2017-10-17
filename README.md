@@ -12,7 +12,7 @@
 <!-- https://codecov.io/gh/serianox/bishop/branch/master/graph/badge.svg -->
 
 [codeclimate-url]: https://codeclimate.com/github/serianox/bishop/issues
-[codeclimate-image]: https://img.shields.io/codeclimate/issues/github/me-and/mdf.svg
+[codeclimate-image]: https://img.shields.io/codeclimate/issues/github/serianox/bishop.svg
 
 [dependencyci-url]: https://dependencyci.com/github/serianox/bishop
 [dependencyci-image]: https://dependencyci.com/github/serianox/bishop/badge
