@@ -5,6 +5,7 @@
     "rules": {
         "array-type": false,
         "arrow-parens": false,
+        "interface-name": false,
         "max-line-length": false,
         "max-classes-per-file": false,
         "member-ordering": [
