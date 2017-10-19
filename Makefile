@@ -22,6 +22,7 @@ test: build
 
 .PHONY: build
 build: transpile
+	cp -r bin dist
 
 .PHONY: transpile
 transpile:
