@@ -1,4 +1,5 @@
 import { assert } from "chai";
+//import { dedent } from "dedent-js";
 import { parseConfiguration } from "../lib/parser";
 
 suite("Parser", () => {
