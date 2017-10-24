@@ -1,3 +1,4 @@
+import * as fs from "fs";
 import * as p from "parsimmon";
 
 export class Comment {
@@ -34,6 +35,16 @@ const configuration = newline.many().then(p.sepBy(p.alt<Declaration | Comment>(d
 
 /**
  * Generate an AST from a configuration file.
+ *
+ * @param path the path to the configuration file
+ * @return the result AST
+ */
+export const readConfiguration = (path: string): AST | null => {
+    return parseConfiguration(fs.readFileSync(path, "utf8"));
+};
+
+/**
+ * Generate an AST from a configuration string.
  *
  * @param input the configuration as a `string`
  * @return the result AST
