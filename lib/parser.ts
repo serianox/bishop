@@ -1,5 +1,6 @@
 import * as fs from "fs";
 import * as p from "parsimmon";
+import { URL } from "url";
 
 export class Comment {
     constructor(public readonly content: string) {}
@@ -34,22 +35,16 @@ const declaration = p.seq(name, whitespace, colon, whitespace, p.sepBy(name, whi
 const configuration = newline.many().then(p.sepBy(p.alt<Declaration | Comment>(declaration, comment), newline.atLeast(1))).skip(newline.many()).skip(p.eof);
 
 /**
- * Generate an AST from a configuration file.
- *
- * @param path the path to the configuration file
- * @return the result AST
- */
-export const readConfiguration = (path: string): AST | null => {
-    return parseConfiguration(fs.readFileSync(path, "utf8"));
-};
-
-/**
- * Generate an AST from a configuration string.
+ * Generate an AST from a configuration.
  *
  * @param input the configuration as a `string`
  * @return the result AST
  */
-export const parseConfiguration = (input: string): AST | null  => {
+export const parseConfiguration = (input: string | URL): AST | null  => {
+    if (input instanceof URL) {
+        input = fs.readFileSync(input.toString(), "utf8");
+    }
+
     console.log(input);
     const result = configuration.parse(input);
     switch (result.status) {

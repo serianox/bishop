@@ -5,11 +5,11 @@ import { parseConfiguration } from "../lib/parser";
 suite("Functional", () => {
     suite("#hello()", () => {
         test("should return `Hello world!`", () => {
-            const data = parseConfiguration(`
+            const data = `
 task1: task2 task3
 task2: task2
 task3:
-`)!;
+`;
             assert.isNotNull(buildTasks(data));
         });
     });

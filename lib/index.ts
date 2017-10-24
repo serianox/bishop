@@ -1,4 +1,5 @@
-import { AST, Comment, Declaration, Option } from "./parser";
+import { URL } from "url";
+import { AST, Comment, Declaration, Option, parseConfiguration } from "./parser";
 
 export class Task {
     public constructor(public readonly name: string, private readonly dependenciesName: string[], private readonly tasks: Map<string, Task>) {}
@@ -16,7 +17,13 @@ export class Task {
     }
 }
 
-export const buildTasks = (ast: AST): Map<string, Task> | null => {
+export const buildTasks = (input: string | URL): Map<string, Task> | null => {
+    const ast = parseConfiguration(input);
+
+    if (!ast) {
+        return null;
+    }
+
     const map = new Map<string, Task>();
     const declarations: Declaration[] = ast.filter((_): _ is Declaration => _ instanceof Declaration);
 
