@@ -40,24 +40,24 @@ const configuration = newline.many().then(p.sepBy(p.alt<Declaration | Comment>(d
  * @param input the configuration as a `string`
  * @return the result AST
  */
-export const parseConfiguration = (input: string | ParsedPath): AST | null  => {
+export const parseConfiguration = (input: string | ParsedPath): AST | string  => {
     const isParsedPath = (_: string | ParsedPath): _ is ParsedPath => (_ as ParsedPath).dir !== undefined;
 
     if (isParsedPath(input)) {
         input = fs.readFileSync(input.dir + input.base, "utf8");
     }
 
-    console.log(input);
+    // console.log(input);
     const result = configuration.parse(input);
     switch (result.status) {
         case true: {
-            console.log(JSON.stringify(result.value, undefined, 4));
+            // console.log(JSON.stringify(result.value, undefined, 4));
             return result.value;
         }
         case false: {
-            console.log(result.expected);
-            console.log(result.index);
-            return null;
+            // console.log(result.expected);
+            // console.log(result.index);
+            return "parsing failed";
         }
     }
 };

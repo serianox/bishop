@@ -10,7 +10,7 @@ task1: task2 task3
 task2: task2
 task3:
 `;
-            assert.isNotNull(buildTasks(data));
+            assert.isNotNull(buildTasks(data, ["task1"]));
         });
     });
 });

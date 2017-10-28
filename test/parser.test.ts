@@ -4,8 +4,8 @@ import { parseConfiguration } from "../lib/parser";
 
 suite("Parser", () => {
     suite("#hello()", () => {
-        test("invalid configuration return null", () => {
-            assert.isNull(parseConfiguration(`&`));
+        test("invalid configuration return string", () => {
+            assert.isString(parseConfiguration(`&`));
         });
         test("should parse empty string", () => {
             assert.isNotNull(parseConfiguration(``));

@@ -16,4 +16,4 @@ program.parse(process.argv);
 
 const options = program as Options;
 
-const tasks = buildTasks(path.parse(options.file || ".bishop"));
+const tasks = buildTasks(path.parse(options.file || ".bishop"), options.args);

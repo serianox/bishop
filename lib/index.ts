@@ -1,8 +1,16 @@
 import { ParsedPath } from "path";
 import { AST, Comment, Declaration, Option, parseConfiguration } from "./parser";
 
+export enum State {
+    NotStarted,
+    InProgress,
+    Done,
+}
+
 export class Task {
     public constructor(public readonly name: string, private readonly dependenciesName: string[], private readonly tasks: Map<string, Task>) {}
+
+    public state: State = State.NotStarted;
 
     public dependencies: Task[];
 
@@ -17,11 +25,11 @@ export class Task {
     }
 }
 
-export const buildTasks = (input: string | ParsedPath): Map<string, Task> | null => {
+export const buildTasks = (input: string | ParsedPath, goals: string[]): Task[] | string => {
     const ast = parseConfiguration(input);
 
-    if (!ast) {
-        return null;
+    if (typeof ast === "string") {
+        return "parsing error";
     }
 
     const map = new Map<string, Task>();
@@ -35,8 +43,16 @@ export const buildTasks = (input: string | ParsedPath): Map<string, Task> | null
     });
 
     if (!tasks.reduce((a, v) => a && v.resolve(), true)) {
-        return null;
+        return "unresolved dependency";
     }
 
-    return map;
+    if (goals.reduce((a, v) => a && map.get(v) !== undefined, true)) {
+        return "unresolved goal";
+    }
+
+    return goals.map(_ => map.get(_)!);
+};
+
+export const getNextTasks = (tasks: Task[]): Task[] | null => {
+    return null;
 };
