@@ -1,4 +1,4 @@
-import { URL } from "url";
+import { ParsedPath } from "path";
 import { AST, Comment, Declaration, Option, parseConfiguration } from "./parser";
 
 export class Task {
@@ -17,7 +17,7 @@ export class Task {
     }
 }
 
-export const buildTasks = (input: string | URL): Map<string, Task> | null => {
+export const buildTasks = (input: string | ParsedPath): Map<string, Task> | null => {
     const ast = parseConfiguration(input);
 
     if (!ast) {

@@ -1,6 +1,6 @@
 import * as fs from "fs";
 import * as p from "parsimmon";
-import { URL } from "url";
+import { ParsedPath } from "path";
 
 export class Comment {
     constructor(public readonly content: string) {}
@@ -40,9 +40,11 @@ const configuration = newline.many().then(p.sepBy(p.alt<Declaration | Comment>(d
  * @param input the configuration as a `string`
  * @return the result AST
  */
-export const parseConfiguration = (input: string | URL): AST | null  => {
-    if (input instanceof URL) {
-        input = fs.readFileSync(input.toString(), "utf8");
+export const parseConfiguration = (input: string | ParsedPath): AST | null  => {
+    const isParsedPath = (_: string | ParsedPath): _ is ParsedPath => (_ as ParsedPath).dir !== undefined;
+
+    if (isParsedPath(input)) {
+        input = fs.readFileSync(input.dir + input.base, "utf8");
     }
 
     console.log(input);

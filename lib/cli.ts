@@ -1,4 +1,6 @@
 import * as program from "commander";
+import * as path from "path";
+import { buildTasks } from "./index";
 
 interface Options {
     file?: string;
@@ -13,3 +15,5 @@ program
 program.parse(process.argv);
 
 const options = program as Options;
+
+const tasks = buildTasks(path.parse(options.file || ".bishop"));
