@@ -25,11 +25,11 @@ export class Task {
     }
 }
 
-export const buildTasks = (input: string | ParsedPath, goals: string[]): Task[] | string => {
+export const buildTasks = (input: string | ParsedPath, goals: string[]): Task[] | Error => {
     const ast = parseConfiguration(input);
 
-    if (typeof ast === "string") {
-        return "parsing error";
+    if (ast instanceof Error) {
+        return new Error("parsing error");
     }
 
     const map = new Map<string, Task>();
@@ -43,11 +43,11 @@ export const buildTasks = (input: string | ParsedPath, goals: string[]): Task[] 
     });
 
     if (!tasks.reduce((a, v) => a && v.resolve(), true)) {
-        return "unresolved dependency";
+        return new Error("unresolved dependency");
     }
 
     if (goals.reduce((a, v) => a && map.get(v) !== undefined, true)) {
-        return "unresolved goal";
+        return new Error("unresolved goal");
     }
 
     return goals.map(_ => map.get(_)!);

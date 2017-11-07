@@ -40,7 +40,7 @@ const configuration = newline.many().then(p.sepBy(p.alt<Declaration | Comment>(d
  * @param input the configuration as a `string`
  * @return the result AST
  */
-export const parseConfiguration = (input: string | ParsedPath): AST | string  => {
+export const parseConfiguration = (input: string | ParsedPath): AST | Error  => {
     const isParsedPath = (_: string | ParsedPath): _ is ParsedPath => (_ as ParsedPath).dir !== undefined;
 
     if (isParsedPath(input)) {
@@ -57,7 +57,7 @@ export const parseConfiguration = (input: string | ParsedPath): AST | string  =>
         case false: {
             // console.log(result.expected);
             // console.log(result.index);
-            return "parsing failed";
+            return new Error("parsing failed");
         }
     }
 };

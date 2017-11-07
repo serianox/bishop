@@ -5,42 +5,42 @@ import { parseConfiguration } from "../lib/parser";
 suite("Parser", () => {
     suite("#hello()", () => {
         test("invalid configuration return string", () => {
-            assert.isString(parseConfiguration(`&`));
+            assert.isTrue(parseConfiguration(`&`) instanceof Error);
         });
         test("should parse empty string", () => {
-            assert.isNotNull(parseConfiguration(``));
+            assert.isFalse(parseConfiguration(``) instanceof Error);
         });
         test("should parse newline", () => {
-            assert.isNotNull(parseConfiguration(`
-`));
+            assert.isFalse(parseConfiguration(`
+`) instanceof Error);
         });
         test("should parse single comment", () => {
-            assert.isNotNull(parseConfiguration(`; foo`));
+            assert.isFalse(parseConfiguration(`; foo`) instanceof Error);
         });
         test("should parse multiple comments", () => {
-            assert.isNotNull(parseConfiguration(`; foo
-; bar`));
+            assert.isFalse(parseConfiguration(`; foo
+; bar`) instanceof Error);
         });
         test("should parse single task", () => {
-            assert.isNotNull(parseConfiguration(`task :`));
+            assert.isFalse(parseConfiguration(`task :`) instanceof Error);
         });
         test("should parse single task with one dependency", () => {
-            assert.isNotNull(parseConfiguration(`task : depa`));
+            assert.isFalse(parseConfiguration(`task : depa`) instanceof Error);
         });
         test("should parse single task with many dependencies", () => {
-            assert.isNotNull(parseConfiguration(`task : depa depb depn`));
+            assert.isFalse(parseConfiguration(`task : depa depb depn`) instanceof Error);
         });
         test("should parse single task with one option", () => {
-            assert.isNotNull(parseConfiguration(`task :
-    opta = vala`));
+            assert.isFalse(parseConfiguration(`task :
+    opta = vala`) instanceof Error);
         });
         test("should parse single task with two options", () => {
-            assert.isNotNull(parseConfiguration(`task :
+            assert.isFalse(parseConfiguration(`task :
     opta = vala
-    optb = valb`));
+    optb = valb`) instanceof Error);
         });
         test("should parse complete example", () => {
-            assert.isNotNull(parseConfiguration(`
+            assert.isFalse(parseConfiguration(`
 ; comment
 ; comment
 task1 : task2 task3
@@ -55,7 +55,7 @@ task2:
     optb=valb ;
 
 task3 :
-`));
+`) instanceof Error);
         });
     });
 });
