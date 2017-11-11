@@ -36,6 +36,7 @@
     "dedent-js": "^1.0.1",
     "mocha": "^3.5.1",
     "nyc": "^11.2.1",
+    "source-map-support": "^0.5.0",
     "tslint": "^5.7.0",
     "typedoc": "^0.8.0",
     "typescript": "^2.5.2",
