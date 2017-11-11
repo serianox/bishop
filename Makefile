@@ -18,7 +18,7 @@ cov-cli: test
 
 .PHONY: test
 test: build
-	nyc --reporter=json mocha --ui tdd --use_strict dist/test/**/*.test.js || true
+	nyc --reporter=json mocha --require source-map-support/register --ui tdd --use_strict dist/test/**/*.test.js || true
 
 .PHONY: build
 build: transpile
