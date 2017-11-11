@@ -1,6 +1,7 @@
 import * as fs from "fs";
 import * as p from "parsimmon";
 import { ParsedPath } from "path";
+import { BSError} from "./error";
 
 export class Comment {
     constructor(public readonly content: string) {}
@@ -57,7 +58,7 @@ export const parseConfiguration = (input: string | ParsedPath): AST | Error  => 
         case false: {
             // console.log(result.expected);
             // console.log(result.index);
-            return new Error("parsing failed");
+            return new BSError("parsing failed");
         }
     }
 };

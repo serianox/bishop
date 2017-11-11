@@ -1,4 +1,5 @@
 import { ParsedPath } from "path";
+import { BSError} from "./error";
 import { AST, Comment, Declaration, Option, parseConfiguration } from "./parser";
 
 export enum State {
@@ -29,7 +30,7 @@ export const buildTasks = (input: string | ParsedPath, goals: string[]): Task[] 
     const ast = parseConfiguration(input);
 
     if (ast instanceof Error) {
-        return new Error("parsing error");
+        return new BSError("parsing error", ast);
     }
 
     const map = new Map<string, Task>();
@@ -43,11 +44,11 @@ export const buildTasks = (input: string | ParsedPath, goals: string[]): Task[] 
     });
 
     if (!tasks.reduce((a, v) => a && v.resolve(), true)) {
-        return new Error("unresolved dependency");
+        return new BSError("unresolved dependency");
     }
 
     if (goals.reduce((a, v) => a && map.get(v) !== undefined, true)) {
-        return new Error("unresolved goal");
+        return new BSError("unresolved goal");
     }
 
     return goals.map(_ => map.get(_)!);
