@@ -9,12 +9,15 @@ export class BSError extends Error {
             const causestack = cause.stack!.split("\n");
 
             let index = 1;
-            for (; thisstack[thisstack.length - index] === causestack[causestack.length - index]; ++index) {
+            for (;;) {
+                if (thisstack[thisstack.length - index] !== causestack[causestack.length - index]) {
+                    break;
+                }
+
+                ++index;
             }
 
             this.stack = causestack.slice(0, causestack.length - index + 1).concat(thisstack[0]).concat(thisstack.slice(2)).join("\n");
         }
-
-        return this;
     }
 }
