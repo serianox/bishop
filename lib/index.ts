@@ -13,7 +13,7 @@ export class Task {
 
     public state: State = State.NotStarted;
 
-    public dependencies: Task[];
+    public dependencies: Task[] = [];
 
     public resolve(): boolean {
         if (!this.dependenciesName.reduce((a, v) => a && this.tasks.has(v), true)) {

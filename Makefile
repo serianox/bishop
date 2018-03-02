@@ -1,8 +1,13 @@
 .PHONY: ci
-ci: lint build test cov-cli codecov
+ci: lint style build test cov-cli codecov doc
+
+.DEFAULT_GOAL := default
+.PHONY: default
+default:
+	yarn run make commit
 
 .PHONY: commit
-commit: lint build test cov-cli cov-html doc
+commit: build test cov-cli
 
 .PHONY: codecov
 codecov: test
@@ -22,17 +27,24 @@ test: build
 
 .PHONY: build
 build: transpile
-	cp -r bin dist
+	cp -rpu bin dist
 
 .PHONY: transpile
 transpile:
 	tsc
 
+.PHONY: fmt
+fmt:
+	tsfmt --replace
+
+.PHONY: style
+style:
+	tsfmt --verify || true
+
 .PHONY: lint
 lint:
-	tsfmt -v &&\
 	tslint -c tslint.json -p tsconfig.json || true
 
 .PHONY: doc
 doc:
-	typedoc --out ./doc --json ./doc/doc.json --theme default --module commonjs
+	typedoc --mode modules --out ./doc ./lib --json ./doc/doc.json --theme minimal
