@@ -1,0 +1,25 @@
+ci: lint style build test cov-cli codecov doc
+
+default:
+
+commit: build test cov-cli
+
+codecov: test
+
+cov-html: test
+
+cov-cli: test
+
+test: build
+
+build: transpile
+
+transpile:
+
+fmt:
+
+style:
+
+lint:
+
+doc:
