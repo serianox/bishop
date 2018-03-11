@@ -1,29 +1,26 @@
 export enum Level {
-    FYI,
-    WTF,
-    OMG,
+    DEBUG,
+    INFO,
+    WARNING,
+    ERROR,
 }
 
-let loglevel: Level = Level.WTF;
+let loglevel: Level = Level.WARNING;
 
 export const setLevel = (level: Level) => {
     loglevel = level;
 };
 
-export const fyi = (message: string, ...parameters: any[]) => {
-    if (loglevel >= Level.FYI) {
+const log = (level: Level) => (message: string, ...parameters: any[]): void => {
+    if (loglevel <= level) {
         console.log(message, ...parameters);
     }
 };
 
-export const wtf = (message: string, ...parameters: any[]) => {
-    if (loglevel >= Level.FYI) {
-        console.warn(message, ...parameters);
-    }
-};
+export const debug = log(Level.DEBUG);
 
-export const omg = (message: string, ...parameters: any[]) => {
-    if (loglevel >= Level.FYI) {
-        console.error(message, ...parameters);
-    }
-};
+export const info = log(Level.INFO);
+
+export const warn = log(Level.WARNING);
+
+export const err = log(Level.ERROR);
