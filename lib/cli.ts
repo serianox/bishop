@@ -1,7 +1,8 @@
+import * as child_process from "child_process";
 import * as program from "commander";
 import * as path from "path";
 import { BSError } from "./error";
-import { Run } from "./index";
+import { Run, Task } from "./index";
 import { fyi, Level, setLevel } from "./logging";
 
 interface Options {
@@ -22,12 +23,31 @@ const options = program as Options;
 
 const tasks = Run.getInstance(path.parse(options.file || ".bishop"), options.args);
 
-fyi(JSON.stringify(tasks));
 if (tasks instanceof BSError) {
     //
 } else {
-    for (let currentTask = tasks.next(); currentTask !== undefined; currentTask = tasks.next()) {
-        fyi(currentTask.name);
-        currentTask.setDone();
-    }
+    const runTask = (task: Task | undefined): void => {
+        if (!task) {
+            return;
+        }
+
+        fyi(task.name);
+        if (task.command) {
+            fyi(task.command);
+            const child = child_process.exec(task.command);
+
+            child.on("close", (code) => {
+                fyi(code.toString());
+                task.setDone();
+
+                return runTask(tasks.next());
+            });
+        } else {
+            task.setDone();
+
+            return runTask(tasks.next());
+        }
+    };
+
+    runTask(tasks.next());
 }

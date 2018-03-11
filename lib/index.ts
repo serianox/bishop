@@ -10,7 +10,11 @@ export enum State {
 }
 
 export class Task {
-    public constructor(public readonly name: string, private readonly dependenciesName: string[]) { }
+    public constructor(
+        public readonly name: string,
+        private readonly dependenciesName: string[],
+        public readonly command?: string,
+    ) { }
 
     private _state: State = State.Unreachable;
 
@@ -19,6 +23,12 @@ export class Task {
     public get state(): State { return this._state; }
 
     public get dependencies(): Task[] { return this._dependencies.slice(); }
+
+    public static getInstance = (input: Declaration): Task => {
+        const command = input.options.find(_ => _.name === "cmd");
+
+        return new Task(input.name, input.dependencies, command ? command.value : undefined);
+    }
 
     public resolve = (tasks: Map<string, Task>): undefined | Error => {
         this.dependenciesName.forEach(dependencyName => {
@@ -72,9 +82,8 @@ export class Run {
         const declarations: Declaration[] = ast.filter((_): _ is Declaration => _ instanceof Declaration);
 
         const tasks = declarations.map(_ => {
-            const name = _.name;
-            const task = new Task(name, _.dependencies);
-            map.set(name, task);
+            const task = Task.getInstance(_);
+            map.set(task.name, task);
             return task;
         });
 
