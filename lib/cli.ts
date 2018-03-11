@@ -1,6 +1,7 @@
 import * as program from "commander";
 import * as path from "path";
-import { buildTasks } from "./index";
+import { BSError } from "./error";
+import { Run } from "./index";
 import { fyi, Level, setLevel } from "./logging";
 
 interface Options {
@@ -19,4 +20,14 @@ program.parse(process.argv);
 
 const options = program as Options;
 
-const tasks = buildTasks(path.parse(options.file || ".bishop"), options.args);
+const tasks = Run.getInstance(path.parse(options.file || ".bishop"), options.args);
+
+fyi(JSON.stringify(tasks));
+if (tasks instanceof BSError) {
+    //
+} else {
+    for (let currentTask = tasks.next(); currentTask !== undefined; currentTask = tasks.next()) {
+        fyi(currentTask.name);
+        currentTask.setDone();
+    }
+}

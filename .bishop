@@ -1,25 +1,39 @@
 ci: lint style build test cov-cli codecov doc
 
 default:
+	cmd = yarn run make commit
 
 commit: build test cov-cli
 
 codecov: test
+	cmd = codecov -f coverage/*.json
 
 cov-html: test
+	cmd = nyc report --reporter=html
 
 cov-cli: test
+	cmd = nyc report
 
 test: build
+	cmd = nyc --reporter=json mocha --require source-map-support/register --ui tdd --use_strict dist/test/**/*.test.js
+	allow-failure = true
 
 build: transpile
+	cmd = cp -rpu bin dist
 
 transpile:
+	cmd = tsc
 
 fmt:
+	cmd = tsfmt --replace
 
 style:
+	cmd = tsfmt --verify
+	allow-failure = true
 
 lint:
+	cmd = tslint -c tslint.json -p tsconfig.json
+	allow-failure = true
 
 doc:
+	cmd = typedoc --mode modules --out ./doc ./lib --json ./doc/doc.json --theme minimal
