@@ -47,4 +47,4 @@ lint:
 
 .PHONY: doc
 doc:
-	typedoc --mode modules --out ./doc ./lib --json ./doc/doc.json --theme minimal
+	typedoc --mode modules --out dist/doc lib --json doc/doc.json --theme minimal
