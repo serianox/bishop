@@ -7,7 +7,6 @@ import { debug, info, Level, setLevel } from "./logging";
 
 export interface Options {
     file?: string;
-    verbose?: boolean;
     debug?: boolean;
     args: string[];
 }
@@ -16,20 +15,16 @@ program
     .version("0.1.0")
     .usage("[options] <task ...>")
     .option("-f, --file <file>", "bishop file")
-    .option("-v, --verbose", "set verbose")
-    .option("-d, --debug", "set very verbose");
+    .option("-d, --debug", "set verbose");
 
 export const main = (argv: string[]): number => {
     program.parse(argv);
 
     const options = program as Options;
 
-    if (options.verbose) {
-        setLevel(Level.INFO);
-    }
-
     if (options.debug) {
         setLevel(Level.DEBUG);
+        debug("debug mode");
     }
 
     const tasks = Run.getInstance(path.parse(options.file || ".bishop"), options.args);

@@ -5,7 +5,7 @@ export enum Level {
     ERROR,
 }
 
-let loglevel: Level = Level.WARNING;
+let loglevel: Level = Level.INFO;
 
 export const setLevel = (level: Level) => {
     loglevel = level;
