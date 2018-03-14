@@ -2,8 +2,8 @@ import { assert } from "chai";
 // import { dedent } from "dedent-js";
 import { parseConfiguration } from "../lib/parser";
 
-suite("Parser", () => {
-    suite("#hello()", () => {
+suite("Functional", () => {
+    suite("#parseConfiguration()", () => {
         test("invalid configuration return string", () => {
             assert.isTrue(parseConfiguration(`&`) instanceof Error);
         });

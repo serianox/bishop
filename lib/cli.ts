@@ -5,7 +5,7 @@ import { BSError } from "./error";
 import { Run, Task } from "./index";
 import { debug, info, Level, setLevel } from "./logging";
 
-interface Options {
+export interface Options {
     file?: string;
     verbose?: boolean;
     debug?: boolean;
@@ -19,45 +19,49 @@ program
     .option("-v, --verbose", "set verbose")
     .option("-d, --debug", "set very verbose");
 
-program.parse(process.argv);
+export const main = (argv: string[]): number => {
+    program.parse(argv);
 
-const options = program as Options;
+    const options = program as Options;
 
-if (options.verbose) {
-    setLevel(Level.INFO);
-}
+    if (options.verbose) {
+        setLevel(Level.INFO);
+    }
 
-if (options.debug) {
-    setLevel(Level.DEBUG);
-}
+    if (options.debug) {
+        setLevel(Level.DEBUG);
+    }
 
-const tasks = Run.getInstance(path.parse(options.file || ".bishop"), options.args);
+    const tasks = Run.getInstance(path.parse(options.file || ".bishop"), options.args);
 
-if (tasks instanceof BSError) {
-    //
-} else {
-    const runTask = (task: Task | undefined): void => {
-        if (!task) {
-            return;
-        }
+    if (tasks instanceof BSError) {
+        //
+    } else {
+        const runTask = (task: Task | undefined): void => {
+            if (!task) {
+                return;
+            }
 
-        debug(task.name);
-        if (task.command) {
-            info(task.command);
-            const child = child_process.exec(task.command);
+            debug(task.name);
+            if (task.command) {
+                info(task.command);
+                const child = child_process.exec(task.command);
 
-            child.on("close", (code) => {
-                debug(code.toString());
+                child.on("close", (code) => {
+                    debug(code.toString());
+                    task.setDone();
+
+                    return runTask(tasks.next());
+                });
+            } else {
                 task.setDone();
 
                 return runTask(tasks.next());
-            });
-        } else {
-            task.setDone();
+            }
+        };
 
-            return runTask(tasks.next());
-        }
-    };
+        runTask(tasks.next());
+    }
 
-    runTask(tasks.next());
+    return 0;
 }
