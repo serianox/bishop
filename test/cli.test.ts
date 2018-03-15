@@ -5,13 +5,19 @@ import { main } from "../lib/cli";
 suite("Functional", () => {
     suite("#main()", () => {
         test("bad file", () => {
-            assert.equal(main("/usr/bin/node bs -f foo foo".split(" ")), 0);
+            assert.equal(main("/usr/bin/node bs -f foo".split(" ")), 0);
         });
         test("implicit file", () => {
             assert.equal(main("/usr/bin/node bs foo".split(" ")), 0);
         });
         test(".bishop file", () => {
             assert.equal(main("/usr/bin/node bs -f .bishop foo".split(" ")), 0);
+        });
+        test("-S", () => {
+            assert.equal(main("/usr/bin/node bs -S".split(" ")), 0);
+        });
+        test("--simulate", () => {
+            assert.equal(main("/usr/bin/node bs --simulate".split(" ")), 0);
         });
         test("-d", () => {
             assert.equal(main("/usr/bin/node bs -d".split(" ")), 0);

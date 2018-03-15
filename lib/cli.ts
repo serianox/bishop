@@ -7,6 +7,7 @@ import { debug, info, Level, setLevel } from "./logging";
 
 export interface Options {
     file?: string;
+    simulate?: boolean;
     debug?: boolean;
     args: string[];
 }
@@ -15,6 +16,7 @@ program
     .version("0.1.0")
     .usage("[options] <task ...>")
     .option("-f, --file <file>", "bishop file")
+    .option("-S, --simulate", "simulate operations")
     .option("-d, --debug", "set verbose");
 
 export const main = (argv: string[]): number => {
@@ -27,6 +29,9 @@ export const main = (argv: string[]): number => {
         debug("debug mode");
     }
 
+    debug(argv.join(", "));
+    info("args " + options.args.join(" "));
+    info(options.file!);
     const tasks = Run.getInstance(path.parse(options.file || ".bishop"), options.args);
 
     if (tasks instanceof BSError) {
@@ -38,7 +43,7 @@ export const main = (argv: string[]): number => {
             }
 
             debug(task.name);
-            if (task.command) {
+            if (task.command && !options.simulate) {
                 info(task.command);
                 const child = child_process.exec(task.command);
 
