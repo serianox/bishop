@@ -1,5 +1,10 @@
 export class BSError extends Error {
-    constructor(message: string, cause?: Error) {
+    constructor(message: string | Error, cause?: Error) {
+        if (message instanceof Error) {
+            cause = message;
+            message = message.message;
+        }
+
         super(message);
 
         Object.setPrototypeOf(this, BSError.prototype);
@@ -9,7 +14,7 @@ export class BSError extends Error {
             const causestack = cause.stack!.split("\n");
 
             let index = 1;
-            for (;;) {
+            for (; ;) {
                 if (thisstack[thisstack.length - index] !== causestack[causestack.length - index]) {
                     break;
                 }

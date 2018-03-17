@@ -3,7 +3,7 @@ import * as program from "commander";
 import * as path from "path";
 import { BSError } from "./error";
 import { Run, Task } from "./index";
-import { debug, info, Level, setLevel } from "./logging";
+import { debug, err, info, Level, setLevel } from "./logging";
 
 export interface Options {
     file?: string;
@@ -29,13 +29,14 @@ export const main = (argv: string[]): number => {
         debug("debug mode");
     }
 
-    debug(argv.join(", "));
-    info("args " + options.args.join(" "));
-    info(options.file!);
     const tasks = Run.getInstance(path.parse(options.file || ".bishop"), options.args);
 
     if (tasks instanceof BSError) {
-        //
+        err(tasks.message);
+        if (tasks.stack) {
+            err(tasks.stack);
+        }
+        return 1;
     } else {
         const runTask = (task: Task | undefined): void => {
             if (!task) {

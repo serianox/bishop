@@ -1,18 +1,18 @@
 import * as fs from "fs";
 import * as p from "parsimmon";
 import { ParsedPath } from "path";
-import { BSError} from "./error";
+import { BSError } from "./error";
 
 export class Comment {
-    constructor(public readonly content: string) {}
+    constructor(public readonly content: string) { }
 }
 
 export class Option {
-    constructor(public readonly name: string, public readonly value: string) {}
+    constructor(public readonly name: string, public readonly value: string) { }
 }
 
 export class Declaration {
-    constructor(public readonly name: string, public readonly dependencies: string[], public readonly options: Option[]) {}
+    constructor(public readonly name: string, public readonly dependencies: string[], public readonly options: Option[]) { }
 }
 
 export type AST = Array<Comment | Declaration>;
@@ -41,11 +41,15 @@ const configuration = newline.many().then(p.sepBy(p.alt<Declaration | Comment>(d
  * @param input the configuration as a `string`
  * @return the result AST
  */
-export const parseConfiguration = (input: string | ParsedPath): AST | Error  => {
+export const parseConfiguration = (input: string | ParsedPath): AST | Error => {
     const isParsedPath = (_: string | ParsedPath): _ is ParsedPath => (_ as ParsedPath).dir !== undefined;
 
     if (isParsedPath(input)) {
-        input = fs.readFileSync(input.dir + input.base, "utf8");
+        try {
+            input = fs.readFileSync(input.dir + input.base, "utf8");
+        } catch (error) {
+            return new BSError(error);
+        }
     }
 
     // console.log(input);

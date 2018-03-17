@@ -5,7 +5,7 @@ import { main } from "../lib/cli";
 suite("Functional", () => {
     suite("#main()", () => {
         test("bad file", () => {
-            assert.equal(main("/usr/bin/node bs -f foo".split(" ")), 0);
+            assert.notEqual(main("/usr/bin/node bs -f foo".split(" ")), 0);
         });
         test("implicit file", () => {
             assert.equal(main("/usr/bin/node bs foo".split(" ")), 0);
