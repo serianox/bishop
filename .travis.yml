@@ -3,6 +3,7 @@ sudo: false
 node_js:
   - "node"
 script:
+  - git verify-commit `git rev-parse --verify HEAD`
   - yarn run bs ci
 cache:
   yarn : true
