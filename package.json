@@ -3,15 +3,15 @@
   "version": "0.1.0",
   "description": "Bishop build tool",
   "directories": {
-    "bin": "./bin",
-    "doc": "./doc",
-    "lib": "./lib",
-    "test": "./test"
+    "bin": "dist/bin",
+    "doc": "doc",
+    "lib": "dist/lib",
+    "test": "dist/test"
   },
-  "main": "./dist/lib/index.js",
-  "bin": {
-    "bs": "./dist/bin/bs"
-  },
+  "files": [
+    "dist"
+  ],
+  "main": "dist/lib/index.js",
   "types": "dist/lib/index.ts.d",
   "scripts": {
     "build": "yarn run make build",
