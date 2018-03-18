@@ -1,6 +1,8 @@
+import * as child_process from "child_process";
 import { ParsedPath } from "path";
 import { BSError } from "./error";
 import { AST, Comment, Declaration, Option, parseConfiguration } from "./parser";
+import { debug, err, info } from "./logging";
 
 export enum State {
     Unreachable,
@@ -30,8 +32,8 @@ export class Task {
         return new Task(input.name, input.dependencies, command ? command.value : undefined);
     }
 
-    public resolve = (tasks: Map<string, Task>): undefined | Error => {
-        this.dependenciesName.forEach(dependencyName => {
+    public resolve = (tasks: Map<string, Task>): undefined | BSError => {
+        for (const dependencyName of this.dependenciesName) {
             const dependency = tasks.get(dependencyName);
 
             if (dependency === undefined) {
@@ -39,7 +41,7 @@ export class Task {
             }
 
             this._dependencies.push(dependency);
-        });
+        }
 
         return;
     }
@@ -65,11 +67,11 @@ export class Run {
         private _waiting: Task[],
     ) { }
 
-    public get reachable(): Task[] { return this._reachable.slice(); }
+    //public get reachable(): Task[] { return this._reachable.slice(); }
 
-    public get ready(): Task[] { return this._ready.slice(); }
+    //public get ready(): Task[] { return this._ready.slice(); }
 
-    public get waiting(): Task[] { return this._waiting.slice(); }
+    //public get waiting(): Task[] { return this._waiting.slice(); }
 
     public static getInstance = (input: string | ParsedPath, goals: string[]): Run | BSError => {
         const ast = parseConfiguration(input);
@@ -87,19 +89,19 @@ export class Run {
             return task;
         });
 
-        tasks.forEach(task => {
+        for (const task of tasks) {
             const result = task.resolve(map);
 
-            if (result instanceof Error) {
+            if (result instanceof BSError) {
                 return result;
             }
-        });
+        }
 
-        goals.forEach(goal => {
+        for (const goal of goals) {
             if (map.get(goal) === undefined) {
                 return new BSError("unresolved goal ̀ " + goal + "`");
             }
-        });
+        }
 
         const computeReachable = (closed: Task[], open: Task[]): Task[] => {
             const next = open.pop();
@@ -136,7 +138,7 @@ export class Run {
         return new Run(reachable, ready, waiting);
     }
 
-    public next = (): Task | undefined => {
+    private next = (): Task | undefined => {
         const waiting: Task[] = [];
 
         this._waiting.forEach(task => {
@@ -150,5 +152,30 @@ export class Run {
         this._waiting = waiting;
 
         return this._ready.pop();
+    }
+
+    public go = (simulate: boolean): void => {
+        const task = this.next();
+
+        if (!task) {
+            return;
+        }
+
+        debug(task.name);
+        if (task.command && !simulate) {
+            info(task.command);
+            const child = child_process.exec(task.command);
+
+            child.on("close", (code) => {
+                debug(code.toString());
+                task.setDone();
+
+                return this.go(simulate);
+            });
+        } else {
+            task.setDone();
+
+            return this.go(simulate);
+        }
     }
 }

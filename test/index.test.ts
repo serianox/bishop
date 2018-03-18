@@ -15,10 +15,31 @@ task1: task2 task3
 task2: task2
 task3:
 `;
-            assert.instanceOf(Run.getInstance(data, ["task1"]), Run);
+            const tasks = Run.getInstance(data, ["task1"]);
+            assert.instanceOf(tasks, Run);
+            (tasks as Run).go(false);
+        });
+        test("unresolved dependency", () => {
+            const data = `
+task1: task2 task3
+task3:
+`;
+            const tasks = Run.getInstance(data, ["task1"]);
+            assert.instanceOf(tasks, BSError);
         });
         test(".bishop file", () => {
-            assert.instanceOf(Run.getInstance(path.parse(".bishop"), ["ci"]), Run);
+            const tasks = Run.getInstance(path.parse(".bishop"), ["ci"]);
+            assert.instanceOf(tasks, Run);
+            (tasks as Run).go(true);
+        });
+        test("simple run", () => {
+            const data = `
+task1:
+    cmd = true
+`;
+            const tasks = Run.getInstance(data, ["task1"]);
+            assert.instanceOf(tasks, Run);
+            (tasks as Run).go(false);
         });
     });
 });

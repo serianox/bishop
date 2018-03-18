@@ -1,4 +1,3 @@
-import * as child_process from "child_process";
 import * as program from "commander";
 import * as path from "path";
 import { BSError } from "./error";
@@ -29,6 +28,9 @@ export const main = (argv: string[]): number => {
         debug("debug mode");
     }
 
+    debug(argv.join(", "));
+    info("args " + options.args.join(" "));
+    info(options.file!);
     const tasks = Run.getInstance(path.parse(options.file || ".bishop"), options.args);
 
     if (tasks instanceof BSError) {
@@ -37,32 +39,9 @@ export const main = (argv: string[]): number => {
             err(tasks.stack);
         }
         return 1;
-    } else {
-        const runTask = (task: Task | undefined): void => {
-            if (!task) {
-                return;
-            }
-
-            debug(task.name);
-            if (task.command && !options.simulate) {
-                info(task.command);
-                const child = child_process.exec(task.command);
-
-                child.on("close", (code) => {
-                    debug(code.toString());
-                    task.setDone();
-
-                    return runTask(tasks.next());
-                });
-            } else {
-                task.setDone();
-
-                return runTask(tasks.next());
-            }
-        };
-
-        runTask(tasks.next());
     }
+
+    tasks.go(options.simulate || false);
 
     return 0;
 }
