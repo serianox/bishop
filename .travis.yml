@@ -4,6 +4,7 @@ node_js:
   - "node"
 script:
   - gpg --version
+  - gpg --keyserver hkp://pool.sks-keyservers.net --recv-keys 7182DF9D3B5E13552BBCE4D99FE89D94949EDC25
   - git verify-commit `git rev-parse --verify HEAD`
   - yarn run bs ci
 cache:
