@@ -8,10 +8,10 @@ suite("Functional", () => {
             assert.notEqual(main("/usr/bin/node bs -f foo".split(" ")), 0);
         });
         test("implicit file", () => {
-            assert.equal(main("/usr/bin/node bs foo".split(" ")), 0);
+            assert.equal(main("/usr/bin/node bs".split(" ")), 0);
         });
         test(".bishop file", () => {
-            assert.equal(main("/usr/bin/node bs -f .bishop foo".split(" ")), 0);
+            assert.equal(main("/usr/bin/node bs -f .bishop".split(" ")), 0);
         });
         test("-S", () => {
             assert.equal(main("/usr/bin/node bs -S".split(" ")), 0);
