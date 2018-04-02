@@ -15,6 +15,7 @@ export class Task {
     public constructor(
         public readonly name: string,
         private readonly dependenciesName: string[],
+        public readonly allowFailure: boolean,
         public readonly command?: string,
     ) { }
 
@@ -27,9 +28,13 @@ export class Task {
     public get dependencies(): Task[] { return this._dependencies.slice(); }
 
     public static getInstance = (input: Declaration): Task => {
+        const getOr = (name: string, or: any): any => {
+            const search = input.options.find(_ => _.name === name);
+            return search? search.value: or;
+        }
         const command = input.options.find(_ => _.name === "cmd");
 
-        return new Task(input.name, input.dependencies, command ? command.value : undefined);
+        return new Task(input.name, input.dependencies, getOr("allow-failure", false), getOr("cmd", undefined));
     }
 
     public resolve = (tasks: Map<string, Task>): undefined | BSError => {
@@ -158,10 +163,14 @@ export class Run {
         return this._waiting.length + this._ready.length === 0;
     }
 
-    public go = (jobs: number, simulate: boolean): void => {
+    public go = (jobs: number, simulate: boolean, error: () => void): void => {
         const runTask = (): void => {
             const runNext = (task: Task, code: number, job: number): void => {
                 info("[" + job + "] " + task.name + ": returned " + code.toString());
+
+                if (code !== 0 && !task.allowFailure) {
+                    error();
+                }
 
                 task.setDone();
 
