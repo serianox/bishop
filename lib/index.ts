@@ -28,13 +28,17 @@ export class Task {
     public get dependencies(): Task[] { return this._dependencies.slice(); }
 
     public static getInstance = (input: Declaration): Task => {
-        const getOr = (name: string, or: any): any => {
+        const getBooleanOr = (name: string, or: boolean): boolean => {
+            const search = input.options.find(_ => _.name === name);
+            return search? search.value == "true": or;
+        }
+
+        const getStringOr = (name: string, or?: string): string | undefined => {
             const search = input.options.find(_ => _.name === name);
             return search? search.value: or;
         }
-        const command = input.options.find(_ => _.name === "cmd");
 
-        return new Task(input.name, input.dependencies, getOr("allow-failure", false), getOr("cmd", undefined));
+        return new Task(input.name, input.dependencies, getBooleanOr("allow-failure", false), getStringOr("cmd", undefined));
     }
 
     public resolve = (tasks: Map<string, Task>): undefined | BSError => {
