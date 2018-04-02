@@ -154,28 +154,50 @@ export class Run {
         return this._ready.pop();
     }
 
-    public go = (simulate: boolean): void => {
-        const task = this.next();
+    private isFinished = (): boolean => {
+        return this._waiting.length + this._ready.length === 0;
+    }
 
-        if (!task) {
-            return;
-        }
+    public go = (jobs: number, simulate: boolean): void => {
+        const runTask = (): void => {
+            const runNext = (task: Task, code: number, job: number): void => {
+                info("[" + job + "] " + task.name + ": returned " + code.toString());
 
-        debug(task.name);
-        if (task.command && !simulate) {
-            info(task.command);
-            const child = child_process.exec(task.command);
-
-            child.on("close", (code) => {
-                debug(code.toString());
                 task.setDone();
 
-                return this.go(simulate);
-            });
-        } else {
-            task.setDone();
+                ++jobs;
 
-            return this.go(simulate);
+                runTask();
+            }
+
+            if (this.isFinished()) {
+                return;
+            }
+
+            const task = this.next();
+
+            if (!task) {
+                return;
+            }
+
+            --jobs;
+            const job = jobs;
+
+            info("[" + job + "] " + task.name);
+            if (task.command && !simulate) {
+                info("[" + job + "] " + task.name + ": " + task.command);
+
+                const child = child_process.exec(task.command);
+                child.on("close", (code) => runNext(task, code, job));
+            } else {
+                runNext(task, 0, job);
+            }
+
+            if (jobs !== 0) {
+                runTask();
+            }
         }
+
+        runTask();
     }
 }

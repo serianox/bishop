@@ -17,7 +17,7 @@ task3:
 `;
             const tasks = Run.getInstance(data, ["task1"]);
             assert.instanceOf(tasks, Run);
-            (tasks as Run).go(false);
+            (tasks as Run).go(1, false);
         });
         test("unresolved dependency", () => {
             const data = `
@@ -30,7 +30,7 @@ task3:
         test(".bishop file", () => {
             const tasks = Run.getInstance(path.parse(".bishop"), ["ci"]);
             assert.instanceOf(tasks, Run);
-            (tasks as Run).go(true);
+            (tasks as Run).go(1, true);
         });
         test("simple run", () => {
             const data = `
@@ -39,7 +39,7 @@ task1:
 `;
             const tasks = Run.getInstance(data, ["task1"]);
             assert.instanceOf(tasks, Run);
-            (tasks as Run).go(false);
+            (tasks as Run).go(1, false);
         });
     });
 });
