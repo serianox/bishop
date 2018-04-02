@@ -49,5 +49,15 @@ task1:
             assert.instanceOf(tasks, Run);
             (tasks as Run).go(1, false, () => {});
         });
+        test("allow-failure", () => {
+            const data = `
+task1:
+    cmd = false
+    allow-failure = true
+`;
+            const tasks = Run.getInstance(data, ["task1"]);
+            assert.instanceOf(tasks, Run);
+            (tasks as Run).go(1, false, () => { assert(false) });
+        });
     });
 });
