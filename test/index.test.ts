@@ -29,7 +29,7 @@ task3:
         });
         test("unresolved goal", () => {
             const data = `
-task1: task2 task3
+task1: task3
 task3:
 `;
             const tasks = Run.getInstance(data, ["task2"]);
