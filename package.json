@@ -15,7 +15,7 @@
   "types": "dist/lib/index.ts.d",
   "scripts": {
     "build": "yarn run bs build",
-    "test": "yarn run bs commit",
+    "test": "yarn run bs test",
     "bs": "bs"
   },
   "keywords": [],
