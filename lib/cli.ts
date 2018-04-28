@@ -1,6 +1,6 @@
 import * as program from "commander";
-import * as path from "path";
 import * as os from "os";
+import * as path from "path";
 import { BSError } from "./error";
 import { Run, Task } from "./index";
 import { debug, err, info, Level, setLevel } from "./logging";
@@ -47,4 +47,4 @@ export const main = (argv: string[]): number => {
     tasks.go(options.jobs || os.cpus().length, options.simulate || false, () => process.exit(1));
 
     return 0;
-}
+};

@@ -1,8 +1,8 @@
 import * as child_process from "child_process";
 import { ParsedPath } from "path";
 import { BSError } from "./error";
-import { AST, Comment, Declaration, Option, parseConfiguration } from "./parser";
 import { debug, err, info } from "./logging";
+import { AST, Comment, Declaration, Option, parseConfiguration } from "./parser";
 
 export enum State {
     Unreachable,
@@ -30,13 +30,13 @@ export class Task {
     public static getInstance = (input: Declaration): Task => {
         const getBooleanOr = (name: string, or: boolean): boolean => {
             const search = input.options.find(_ => _.name === name);
-            return search? search.value == "true": or;
-        }
+            return search ? search.value === "true" : or;
+        };
 
         const getStringOr = (name: string, or?: string): string | undefined => {
             const search = input.options.find(_ => _.name === name);
-            return search? search.value: or;
-        }
+            return search ? search.value : or;
+        };
 
         return new Task(input.name, input.dependencies, getBooleanOr("allow-failure", false), getStringOr("cmd", undefined));
     }
@@ -76,11 +76,11 @@ export class Run {
         private _waiting: Task[],
     ) { }
 
-    //public get reachable(): Task[] { return this._reachable.slice(); }
+    // public get reachable(): Task[] { return this._reachable.slice(); }
 
-    //public get ready(): Task[] { return this._ready.slice(); }
+    // public get ready(): Task[] { return this._ready.slice(); }
 
-    //public get waiting(): Task[] { return this._waiting.slice(); }
+    // public get waiting(): Task[] { return this._waiting.slice(); }
 
     public static getInstance = (input: string | ParsedPath, goals: string[]): Run | BSError => {
         const ast = parseConfiguration(input);
@@ -169,19 +169,19 @@ export class Run {
 
     public go = (jobs: number, simulate: boolean, error: () => void): void => {
         const runTask = (): void => {
-            const runNext = (task: Task, code: number, job: number): void => {
-                info("[" + job + "] " + task.name + ": returned " + code.toString());
+            const runNext = (nextTask: Task, code: number, jobNumber: number): void => {
+                info("[" + jobNumber + "] " + nextTask.name + ": returned " + code.toString());
 
-                if (code !== 0 && !task.allowFailure) {
+                if (code !== 0 && !nextTask.allowFailure) {
                     error();
                 }
 
-                task.setDone();
+                nextTask.setDone();
 
                 ++jobs;
 
                 runTask();
-            }
+            };
 
             if (this.isFinished()) {
                 return;
@@ -209,7 +209,7 @@ export class Run {
             if (jobs !== 0) {
                 runTask();
             }
-        }
+        };
 
         runTask();
     }

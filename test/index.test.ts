@@ -1,5 +1,5 @@
-import * as path from "path";
 import { assert } from "chai";
+import * as path from "path";
 import { BSError } from "../lib/error";
 import { Run, Task } from "../lib/index";
 import { parseConfiguration } from "../lib/parser";
@@ -17,7 +17,7 @@ task3:
 `;
             const tasks = Run.getInstance(data, ["task1"]);
             assert.instanceOf(tasks, Run);
-            (tasks as Run).go(1, false, () => {});
+            (tasks as Run).go(1, false, () => { return; });
         });
         test("unresolved dependency", () => {
             const data = `
@@ -38,7 +38,7 @@ task3:
         test(".bishop file", () => {
             const tasks = Run.getInstance(path.parse(".bishop"), ["ci"]);
             assert.instanceOf(tasks, Run);
-            (tasks as Run).go(1, true, () => {});
+            (tasks as Run).go(1, true, () => { return; });
         });
         test("simple run", () => {
             const data = `
@@ -47,7 +47,7 @@ task1:
 `;
             const tasks = Run.getInstance(data, ["task1"]);
             assert.instanceOf(tasks, Run);
-            (tasks as Run).go(1, false, () => {});
+            (tasks as Run).go(1, false, () => { return; });
         });
         test("allow-failure", () => {
             const data = `
@@ -57,7 +57,7 @@ task1:
 `;
             const tasks = Run.getInstance(data, ["task1"]);
             assert.instanceOf(tasks, Run);
-            (tasks as Run).go(1, false, () => { assert(false) });
+            (tasks as Run).go(1, false, () => { assert(false); });
         });
         test("disallow-failure", () => {
             const data = `
@@ -67,7 +67,7 @@ task1:
 `;
             const tasks = Run.getInstance(data, ["task1"]);
             assert.instanceOf(tasks, Run);
-            (tasks as Run).go(1, false, () => {});
+            (tasks as Run).go(1, false, () => { return; });
         });
     });
 });

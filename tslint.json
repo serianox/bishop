@@ -11,7 +11,7 @@
         "member-ordering": [
             true,
             {
-                "alphabetize": false,
+                "alphabetize": false
             }
         ],
         "no-console": false,
@@ -21,7 +21,7 @@
             "ban-keywords",
             "check-format",
             "allow-leading-underscore"
-        ],
+        ]
     },
-    "rulesDirectory": [],
+    "rulesDirectory": []
 }
