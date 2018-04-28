@@ -17,6 +17,7 @@ export class Task {
         private readonly dependenciesName: string[],
         public readonly allowFailure: boolean,
         public readonly silent: boolean,
+        public readonly jobs: number,
         public readonly command?: string,
     ) { }
 
@@ -34,12 +35,20 @@ export class Task {
             return search ? search.value === "true" : or;
         };
 
+        const getNumberOr = (name: string, or: number): number => {
+            const search = input.options.find(_ => _.name === name);
+            return search ? parseInt(search.value) : or;
+        };
+
         const getStringOr = (name: string, or?: string): string | undefined => {
             const search = input.options.find(_ => _.name === name);
             return search ? search.value : or;
         };
 
-        return new Task(input.name, input.dependencies, getBooleanOr("allow-failure", false), getBooleanOr("silent", false), getStringOr("cmd", undefined));
+        // TODO should cap the number of jobs for a task to the maximum number of jobs allowed
+        // TODO should check that jobs > 0
+        // TODO should check parameter consistency
+        return new Task(input.name, input.dependencies, getBooleanOr("allow-failure", false), getBooleanOr("silent", false), getNumberOr("jobs", 1), getStringOr("cmd", undefined));
     }
 
     public resolve = (tasks: Map<string, Task>): undefined | BSError => {
@@ -179,7 +188,7 @@ export class Run {
 
                 nextTask.setDone();
 
-                ++jobs;
+                jobs += nextTask.jobs;
 
                 runTask();
             };
@@ -194,7 +203,11 @@ export class Run {
                 return;
             }
 
-            --jobs;
+            if (task.jobs > jobs) {
+                return;
+            }
+
+            jobs -= task.jobs;
             const job = jobs;
 
             info("[" + job + "] " + task.name);
