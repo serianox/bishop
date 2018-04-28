@@ -37,7 +37,7 @@ export class Task {
 
         const getNumberOr = (name: string, or: number): number => {
             const search = input.options.find(_ => _.name === name);
-            return search ? parseInt(search.value) : or;
+            return search ? parseInt(search.value, 10) : or;
         };
 
         const getStringOr = (name: string, or?: string): string | undefined => {
@@ -48,7 +48,11 @@ export class Task {
         // TODO should cap the number of jobs for a task to the maximum number of jobs allowed
         // TODO should check that jobs > 0
         // TODO should check parameter consistency
-        return new Task(input.name, input.dependencies, getBooleanOr("allow-failure", false), getBooleanOr("silent", false), getNumberOr("jobs", 1), getStringOr("cmd", undefined));
+        const allowFailure = getBooleanOr("allow-failure", false);
+        const silent = getBooleanOr("silent", false);
+        const jobs = getNumberOr("jobs", 1);
+
+        return new Task(input.name, input.dependencies, allowFailure, silent, jobs, getStringOr("cmd", undefined));
     }
 
     public resolve = (tasks: Map<string, Task>): undefined | BSError => {
