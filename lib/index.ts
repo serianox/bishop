@@ -1,7 +1,7 @@
 import * as child_process from "child_process";
 import { ParsedPath } from "path";
 import { BSError } from "./error";
-import { debug, err, info } from "./logging";
+import { debug, err, info, warn } from "./logging";
 import { AST, Comment, Declaration, Option, parseConfiguration } from "./parser";
 
 export enum State {
@@ -201,6 +201,9 @@ export class Run {
                 info("[" + job + "] " + task.name + ": " + task.command);
 
                 const child = child_process.exec(task.command);
+
+                child.stdout.on("data", (data) => process.stdout.write(data.toString()) );
+                child.stderr.on("data", (data) => process.stderr.write(data.toString()) );
                 child.on("close", (code) => runNext(task, code, job));
             } else {
                 runNext(task, 0, job);
