@@ -52,17 +52,11 @@ export const parseConfiguration = (input: string | ParsedPath): AST | Error => {
         }
     }
 
-    // console.log(input);
     const result = configuration.parse(input);
-    switch (result.status) {
-        case true: {
-            // console.log(JSON.stringify(result.value, undefined, 4));
-            return result.value;
-        }
-        case false: {
-            // console.log(result.expected);
-            // console.log(result.index);
-            return new BSError("parsing failed");
-        }
+
+    if (!result.status) {
+        return new BSError("parsing failed");
     }
+
+    return result.value;
 };
