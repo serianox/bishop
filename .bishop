@@ -3,7 +3,7 @@ ci: lint style build test cov-cli codecov doc
 default:
 	cmd = yarn run make commit
 
-commit: build test cov-cli
+commit: lint style build test cov-cli
 
 codecov: test
 	cmd = codecov -f coverage/*.json

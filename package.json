@@ -14,9 +14,9 @@
   "main": "dist/lib/index.js",
   "types": "dist/lib/index.ts.d",
   "scripts": {
-    "build": "yarn run make build",
-    "test": "yarn run make commit",
-    "make": "make -j"
+    "build": "yarn run bs build",
+    "test": "yarn run bs commit",
+    "bs": "bs"
   },
   "keywords": [],
   "author": "Thomas Duboucher <thomas@duboucher.eu> (https://duboucher.eu/)",
