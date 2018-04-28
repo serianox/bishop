@@ -16,6 +16,7 @@ export class Task {
         public readonly name: string,
         private readonly dependenciesName: string[],
         public readonly allowFailure: boolean,
+        public readonly silent: boolean,
         public readonly command?: string,
     ) { }
 
@@ -38,7 +39,7 @@ export class Task {
             return search ? search.value : or;
         };
 
-        return new Task(input.name, input.dependencies, getBooleanOr("allow-failure", false), getStringOr("cmd", undefined));
+        return new Task(input.name, input.dependencies, getBooleanOr("allow-failure", false), getBooleanOr("silent", false), getStringOr("cmd", undefined));
     }
 
     public resolve = (tasks: Map<string, Task>): undefined | BSError => {
@@ -202,8 +203,11 @@ export class Run {
 
                 const child = child_process.exec(task.command);
 
-                child.stdout.on("data", (data) => process.stdout.write(data.toString()) );
-                child.stderr.on("data", (data) => process.stderr.write(data.toString()) );
+                if (!task.silent) {
+                    child.stdout.on("data", (data) => process.stdout.write(data.toString()) );
+                    child.stderr.on("data", (data) => process.stderr.write(data.toString()) );
+                }
+
                 child.on("close", (code) => runNext(task, code, job));
             } else {
                 runNext(task, 0, job);
