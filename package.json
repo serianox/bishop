@@ -1,6 +1,6 @@
 {
   "name": "@serianox/bishop",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Bishop build tool",
   "directories": {
     "bin": "dist/bin",
@@ -29,6 +29,7 @@
     "url": "https://github.com/serianox/bishop/issues"
   },
   "devDependencies": {
+    "@serianox/bishop": "^1.0.0",
     "@types/chai": "^4.1.2",
     "@types/mocha": "^2.2.48",
     "@types/node": "^9.4.6",
