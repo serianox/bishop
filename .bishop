@@ -16,7 +16,7 @@ cov-cli: test
 
 test: build
 	cmd = nyc --reporter=json mocha --require source-map-support/register --ui tdd --use_strict dist/test/**/*.test.js
-	allow-failure = true
+	allow-failure
 
 build: transpile
 	cmd = cp -rpu bin dist
@@ -29,11 +29,11 @@ fmt:
 
 style:
 	cmd = tsfmt --verify
-	allow-failure = true
+	allow-failure
 
 lint:
 	cmd = tslint -c tslint.json -p tsconfig.json
-	allow-failure = true
+	allow-failure
 
 doc:
 	cmd = typedoc --mode modules --out dist/doc lib --json doc/doc.json --theme minimal

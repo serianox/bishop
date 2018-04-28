@@ -39,6 +39,10 @@ suite("Functional", () => {
     opta = vala
     optb = valb`) instanceof Error);
         });
+        test("should parse an option with no value", () => {
+            assert.isFalse(parseConfiguration(`task :
+    opta `) instanceof Error);
+        });
         test("should parse complete example", () => {
             assert.isFalse(parseConfiguration(`
 ; comment
