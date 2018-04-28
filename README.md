@@ -1,8 +1,12 @@
 # Bishop
+[![npm version][npm-image]][npm-url]
 [![Build Status][travis-image]][travis-url]
 [![Issues Coverage][codecov-image]][codecov-url]
 [![Maintainability][codeclimate-image]][codeclimate-url]
 [![Dependency Status][dependencyci-image]][dependencyci-url]
+
+[npm-url]: https://www.npmjs.com/package/@serianox/bishop
+[npm-image]: https://badge.fury.io/js/%40serianox%2Fbishop.svg
 
 [travis-url]: https://travis-ci.org/serianox/bishop
 [travis-image]: https://travis-ci.org/serianox/bishop.svg
