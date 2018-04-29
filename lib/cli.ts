@@ -48,7 +48,7 @@ export const main = (argv: string[]): number => {
         }
     });
 
-    const tasks = Run.getInstance(path.parse(options.file || ".bishop"), goals);
+    const tasks = Run.getInstance(path.parse(options.file || ".bishop"), goals, args);
 
     if (tasks instanceof BSError) {
         err(tasks.message);

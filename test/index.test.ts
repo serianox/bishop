@@ -7,7 +7,7 @@ import { parseConfiguration } from "../lib/parser";
 suite("Functional", () => {
     suite("#main()", () => {
         test("bad string", () => {
-            assert.instanceOf(Run.getInstance("&", ["task1"]), BSError);
+            assert.instanceOf(Run.getInstance("&", ["task1"], new Map<string, string>()), BSError);
         });
         test("basic string", () => {
             const data = `
@@ -15,7 +15,7 @@ task1: task2 task3
 task2: task2
 task3:
 `;
-            const tasks = Run.getInstance(data, ["task1"]);
+            const tasks = Run.getInstance(data, ["task1"], new Map<string, string>());
             assert.instanceOf(tasks, Run);
             (tasks as Run).go(1, false, () => { return; });
         });
@@ -24,7 +24,7 @@ task3:
 task1: task2 task3
 task3:
 `;
-            const tasks = Run.getInstance(data, ["task1"]);
+            const tasks = Run.getInstance(data, ["task1"], new Map<string, string>());
             assert.instanceOf(tasks, BSError);
         });
         test("unresolved goal", () => {
@@ -32,11 +32,11 @@ task3:
 task1: task3
 task3:
 `;
-            const tasks = Run.getInstance(data, ["task2"]);
+            const tasks = Run.getInstance(data, ["task2"], new Map<string, string>());
             assert.instanceOf(tasks, BSError);
         });
         test(".bishop file", () => {
-            const tasks = Run.getInstance(path.parse(".bishop"), ["ci"]);
+            const tasks = Run.getInstance(path.parse(".bishop"), ["ci"], new Map<string, string>());
             assert.instanceOf(tasks, Run);
             (tasks as Run).go(1, true, () => { return; });
         });
@@ -45,7 +45,7 @@ task3:
 task1:
     cmd = true
 `;
-            const tasks = Run.getInstance(data, ["task1"]);
+            const tasks = Run.getInstance(data, ["task1"], new Map<string, string>());
             assert.instanceOf(tasks, Run);
             (tasks as Run).go(1, false, () => { return; });
         });
@@ -55,7 +55,7 @@ task1:
     cmd = false
     allow-failure = true
 `;
-            const tasks = Run.getInstance(data, ["task1"]);
+            const tasks = Run.getInstance(data, ["task1"], new Map<string, string>());
             assert.instanceOf(tasks, Run);
             (tasks as Run).go(1, false, () => { assert(false); });
         });
@@ -65,7 +65,7 @@ task1:
     cmd = false
     allow-failure = false
 `;
-            const tasks = Run.getInstance(data, ["task1"]);
+            const tasks = Run.getInstance(data, ["task1"], new Map<string, string>());
             assert.instanceOf(tasks, Run);
             (tasks as Run).go(1, false, () => { return; });
         });

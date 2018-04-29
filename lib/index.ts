@@ -29,7 +29,7 @@ export class Task {
 
     public get dependencies(): Task[] { return this._dependencies.slice(); }
 
-    public static getInstance = (input: Declaration): Task => {
+    public static getInstance = (input: Declaration, options: Map<string, string>): Task => {
         const getBooleanOr = (name: string, or: boolean): boolean => {
             const search = input.options.find(_ => _.name === name);
             return search ? search.value === "true" : or;
@@ -64,13 +64,17 @@ export class Task {
                         return _;
                     }
 
-                    const replacement = getStringOr(match[1]);
-
-                    if (!replacement) {
-                        return _;
+                    if (options.get(match[1])) {
+                        return options.get(match[1]);
                     }
 
-                    return replacement;
+                    const replacement = getStringOr(match[1]);
+
+                    if (replacement) {
+                        return replacement;
+                    }
+
+                    return _;
                 })
                 .join("");
         }
@@ -119,7 +123,7 @@ export class Run {
 
     // public get waiting(): Task[] { return this._waiting.slice(); }
 
-    public static getInstance = (input: string | ParsedPath, goals: string[]): Run | BSError => {
+    public static getInstance = (input: string | ParsedPath, goals: string[], options: Map<string, string>): Run | BSError => {
         const ast = parseConfiguration(input);
 
         if (ast instanceof Error) {
@@ -130,7 +134,7 @@ export class Run {
         const declarations: Declaration[] = ast.filter((_): _ is Declaration => _ instanceof Declaration);
 
         const tasks = declarations.map(_ => {
-            const task = Task.getInstance(_);
+            const task = Task.getInstance(_, options);
             map.set(task.name, task);
             return task;
         });
