@@ -34,7 +34,21 @@ export const main = (argv: string[]): number => {
     debug(argv.join(", "));
     info("args " + options.args.join(" "));
     info(options.file!);
-    const tasks = Run.getInstance(path.parse(options.file || ".bishop"), options.args);
+
+    const goals = new Array<string>();
+    const args = new Map<string, string>();
+
+    options.args.forEach(_ => {
+        const match = _.match(/([^=]+)=(.*)/);
+
+        if (match) {
+            args.set(match[1], match[2]);
+        } else {
+            goals.push(_);
+        }
+    });
+
+    const tasks = Run.getInstance(path.parse(options.file || ".bishop"), goals);
 
     if (tasks instanceof BSError) {
         err(tasks.message);
