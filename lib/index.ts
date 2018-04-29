@@ -52,7 +52,30 @@ export class Task {
         const silent = getBooleanOr("silent", false);
         const jobs = getNumberOr("jobs", 1);
 
-        return new Task(input.name, input.dependencies, allowFailure, silent, jobs, getStringOr("cmd", undefined));
+        let cmd = getStringOr("cmd");
+
+        if (cmd) {
+            cmd = cmd
+                .split(/(\([a-zA-Z][a-zA-Z0-9]*(?:[-_.][a-zA-Z0-9]+)*\))/)
+                .map(_ => {
+                    const match = _.match(/\(([^)]+)\)/);
+
+                    if (!match) {
+                        return _;
+                    }
+
+                    const replacement = getStringOr(match[1]);
+
+                    if (!replacement) {
+                        return _;
+                    }
+
+                    return replacement;
+                })
+                .join("");
+        }
+
+        return new Task(input.name, input.dependencies, allowFailure, silent, jobs, cmd);
     }
 
     public resolve = (tasks: Map<string, Task>): undefined | BSError => {

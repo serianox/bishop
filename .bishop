@@ -1,8 +1,5 @@
 ci: lint style build test cov-cli codecov doc
 
-default:
-	cmd = yarn run make commit
-
 commit: lint style build test cov-cli
 
 codecov: test
@@ -32,7 +29,8 @@ style:
 	allow-failure
 
 lint:
-	cmd = tslint -c tslint.json -p tsconfig.json
+	tsconfig = tsconfig.json
+	cmd = tslint -c tslint.json -p (tsconfig)
 	allow-failure
 
 doc:
