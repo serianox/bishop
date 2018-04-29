@@ -53,7 +53,7 @@ export const main = (argv: string[]): number => {
     if (tasks instanceof BSError) {
         err(tasks.message);
         if (tasks.stack) {
-            err(tasks.stack);
+            debug(tasks.stack);
         }
         return 1;
     }
