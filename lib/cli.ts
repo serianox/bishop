@@ -38,6 +38,8 @@ export const main = (argv: string[]): number => {
     const goals = new Array<string>();
     const args = new Map<string, string>();
 
+    args.set("jobs", (options.jobs || os.cpus().length).toString());
+
     Object.entries(process.env).forEach(([key, value]) => {args.set(key, value!); });
 
     options.args.forEach(_ => {
