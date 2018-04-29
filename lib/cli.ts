@@ -38,6 +38,8 @@ export const main = (argv: string[]): number => {
     const goals = new Array<string>();
     const args = new Map<string, string>();
 
+    Object.entries(process.env).forEach(([key, value]) => {args.set(key, value!); });
+
     options.args.forEach(_ => {
         const match = _.match(/([^=]+)=(.*)/);
 
