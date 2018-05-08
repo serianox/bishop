@@ -73,7 +73,7 @@ export const main = (argv: string[]): number => {
         return 1;
     }
 
-    tasks.go(options.jobs || os.cpus().length, options.simulate || false, () => process.exit(1));
+    tasks.go(options.jobs || os.cpus().length, options.simulate || false, () => null, () => process.exit(1));
 
     return 0;
 };

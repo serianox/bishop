@@ -9,7 +9,7 @@ suite("Functional", () => {
         test("bad string", () => {
             assert.instanceOf(Run.getInstance("&", ["task1"], new Map<string, string>()), BSError);
         });
-        test("basic string", () => {
+        test("basic string", (done) => {
             const data = `
 task1: task2 task3
 task2: task2
@@ -17,7 +17,7 @@ task3:
 `;
             const tasks = Run.getInstance(data, ["task1"], new Map<string, string>());
             assert.instanceOf(tasks, Run);
-            (tasks as Run).go(1, false, () => { return; });
+            (tasks as Run).go(1, false, done, assert.fail);
         });
         test("unresolved dependency", () => {
             const data = `
@@ -35,21 +35,21 @@ task3:
             const tasks = Run.getInstance(data, ["task2"], new Map<string, string>());
             assert.instanceOf(tasks, BSError);
         });
-        test(".bishop file", () => {
+        test(".bishop file", (done) => {
             const tasks = Run.getInstance(path.parse(".bishop"), ["ci"], new Map<string, string>());
             assert.instanceOf(tasks, Run);
-            (tasks as Run).go(1, true, () => { return; });
+            (tasks as Run).go(1, true, done, assert.fail);
         });
-        test("simple run", () => {
+        test("simple run", (done) => {
             const data = `
 task1:
     cmd = true
 `;
             const tasks = Run.getInstance(data, ["task1"], new Map<string, string>());
             assert.instanceOf(tasks, Run);
-            (tasks as Run).go(1, false, () => { return; });
+            (tasks as Run).go(1, false, done, assert.fail);
         });
-        test("allow-failure", () => {
+        test("allow-failure", (done) => {
             const data = `
 task1:
     cmd = false
@@ -57,9 +57,9 @@ task1:
 `;
             const tasks = Run.getInstance(data, ["task1"], new Map<string, string>());
             assert.instanceOf(tasks, Run);
-            (tasks as Run).go(1, false, () => { assert(false); });
+            (tasks as Run).go(1, false, done, assert.fail);
         });
-        test("disallow-failure", () => {
+        test("disallow-failure", (done) => {
             const data = `
 task1:
     cmd = false
@@ -67,7 +67,7 @@ task1:
 `;
             const tasks = Run.getInstance(data, ["task1"], new Map<string, string>());
             assert.instanceOf(tasks, Run);
-            (tasks as Run).go(1, false, () => { return; });
+            (tasks as Run).go(1, false, assert.fail, done);
         });
     });
 });

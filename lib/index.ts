@@ -208,13 +208,14 @@ export class Run {
         return this._waiting.length + this._ready.length === 0;
     }
 
-    public go = (jobs: number, simulate: boolean, error: () => void): void => {
+    public go = (jobs: number, simulate: boolean, done: () => void, error: () => void): void => {
         const runTask = (): void => {
             const runNext = (nextTask: Task, code: number, jobNumber: number): void => {
                 info("[" + jobNumber + "] " + nextTask.name + ": returned " + code.toString());
 
                 if (code !== 0 && !nextTask.allowFailure) {
                     error();
+                    return;
                 }
 
                 nextTask.setDone();
@@ -225,6 +226,7 @@ export class Run {
             };
 
             if (this.isFinished()) {
+                done();
                 return;
             }
 
