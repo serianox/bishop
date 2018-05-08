@@ -12,7 +12,7 @@ suite("Functional", () => {
         test("basic string", (done) => {
             const data = `
 task1: task2 task3
-task2: task2
+task2: task3
 task3:
 `;
             const tasks = Run.getInstance(data, ["task1"], new Map<string, string>());
