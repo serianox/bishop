@@ -14,8 +14,16 @@ export interface Options {
     args: string[];
 }
 
+const version = (() => {
+    try {
+        return require("../../package.json").version;
+    } catch (e) {
+        return "unknown";
+    }
+})();
+
 program
-    .version("0.1.0")
+    .version(version)
     .usage("[options] <task ...>")
     .option("-f, --file <file>", "bishop file")
     .option("-j, --jobs <jobs>", "number of jobs to start in parallel")
