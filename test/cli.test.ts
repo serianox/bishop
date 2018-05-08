@@ -4,11 +4,11 @@ import { main } from "../lib/cli";
 
 suite("Functional", () => {
     suite("#main()", () => {
-        test("bad file", () => {
-            assert.notEqual(main("/usr/bin/node bs -f foo".split(" ")), 0);
-        });
         test("implicit file", () => {
             assert.equal(main("/usr/bin/node bs".split(" ")), 0);
+        });
+        test("bad file", () => {
+            assert.notEqual(main("/usr/bin/node bs -f foo".split(" ")), 0);
         });
         test(".bishop file", () => {
             assert.equal(main("/usr/bin/node bs -f .bishop".split(" ")), 0);

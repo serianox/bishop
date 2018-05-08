@@ -13,7 +13,6 @@ cov-cli: test
 
 test: build
 	cmd = nyc --reporter=json mocha --require source-map-support/register --ui tdd --use_strict dist/test/**/*.test.js
-	allow-failure
 
 build: transpile copy-bin
 
