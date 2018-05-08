@@ -2,5 +2,6 @@
 coverage
 dist
 doc
+mochawesome-report
 node_modules
 yarn-error.log

@@ -37,6 +37,7 @@
     "codecov": "^3.0.0",
     "dedent-js": "^1.0.1",
     "mocha": "^5.0.1",
+    "mochawesome": "^3.0.2",
     "nyc": "^11.4.1",
     "source-map-support": "^0.5.3",
     "tslint": "^5.9.1",
