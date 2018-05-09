@@ -48,7 +48,7 @@ Below is how running tests for Bishop is declared. You can view the full .bishop
 test: build
 	cmd = nyc --reporter=json mocha --require source-map-support/register --ui tdd --use_strict dist/test/**/*.test.js
 	allow-failure = true
-  silent
+	silent
 ```
 
 ## License
