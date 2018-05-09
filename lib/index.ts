@@ -210,17 +210,20 @@ export class Run {
 
     public go = (jobs: number, simulate: boolean, done: () => void, error: () => void): void => {
         const runTask = (): void => {
-            const runNext = (nextTask: Task, code: number, jobNumber: number): void => {
-                info("[" + jobNumber + "] " + nextTask.name + ": returned " + code.toString());
+            const runNext = (currentTask: Task, code: number, jobNumber: number): void => {
+                info("[" + jobNumber + "] " + currentTask.name + ": returned " + code.toString());
 
-                if (code !== 0 && !nextTask.allowFailure) {
-                    error();
+                if (code !== 0 && !currentTask.allowFailure) {
+                    if (error) {
+                        error();
+                    }
+
                     return;
                 }
 
-                nextTask.setDone();
+                currentTask.setDone();
 
-                jobs += nextTask.jobs;
+                jobs += currentTask.jobs;
 
                 runTask();
             };
@@ -241,6 +244,7 @@ export class Run {
             }
 
             jobs -= task.jobs;
+
             const job = jobs;
 
             info("[" + job + "] " + task.name);
@@ -250,8 +254,8 @@ export class Run {
                 const child = child_process.exec(task.command);
 
                 if (!task.silent) {
-                    child.stdout.on("data", (data) => process.stdout.write(data.toString()) );
-                    child.stderr.on("data", (data) => process.stderr.write(data.toString()) );
+                    child.stdout.on("data", (data) => process.stdout.write(data.toString()));
+                    child.stderr.on("data", (data) => process.stderr.write(data.toString()));
                 }
 
                 child.on("close", (code) => runNext(task, code, job));

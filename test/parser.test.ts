@@ -51,7 +51,6 @@ task1 : task2 task3
     opta = vala
     optb = valb
 
-
 ; comment
 ; comment
 task2:
