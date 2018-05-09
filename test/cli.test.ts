@@ -8,7 +8,7 @@ suite("Functional", () => {
             assert.equal(main("/usr/bin/node bs".split(" ")), 0);
         });
         test("bad file", () => {
-            assert.notEqual(main("/usr/bin/node bs -f foo".split(" ")), 0);
+            assert.notEqual(main("/usr/bin/node bs -f znRBs7DhKp".split(" ")), 0);
         });
         test(".bishop file", () => {
             assert.equal(main("/usr/bin/node bs -f .bishop".split(" ")), 0);
