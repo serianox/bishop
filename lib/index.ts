@@ -153,7 +153,7 @@ export class Run {
             }
         }
 
-        const computeReachable = (closed: Task[], open: Task[]): Task[] => {
+        const computeReachable = (closed: Task[], open: Task[]): Task[] | BSError => {
             const next = open.pop();
 
             if (next === undefined) {
@@ -174,6 +174,10 @@ export class Run {
 
         const reachable = computeReachable([], goals.map(_ => map.get(_)!));
 
+        if (reachable instanceof BSError) {
+            return reachable;
+        }
+
         const ready: Task[] = [];
         const waiting: Task[] = [];
 
@@ -189,12 +193,17 @@ export class Run {
     }
 
     private next = (): Task | undefined => {
+        debug("waiting tasks: " + this._waiting.map(_ => "`" + _.name + "`").join(", "));
+        debug("ready tasks: " + this._ready.map(_ => "`" + _.name + "`").join(", "));
+
         const waiting: Task[] = [];
 
         this._waiting.forEach(task => {
             if (task.dependencies.reduce((result, dependency) => result && dependency.state !== State.Done, true)) {
+                debug("task `" + task.name + "` left in waiting set");
                 waiting.push(task);
             } else {
+                debug("task `" + task.name + "` moved to ready set");
                 this._ready.push(task);
             }
         });
@@ -251,6 +260,8 @@ export class Run {
             }
 
             if (task.jobs > jobs) {
+                debug("task `" + task.name + "` not run, need " + task.jobs + " job(s), got " + jobs);
+                // BUG task dropped here if not enough jobs are available
                 return;
             }
 
