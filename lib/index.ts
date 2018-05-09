@@ -204,8 +204,18 @@ export class Run {
         return this._ready.pop();
     }
 
+    private _running: number = 0;
+
+    private start = (task: Task): void => {
+        ++this._running;
+    }
+
+    private complete = (task: Task): void => {
+        --this._running;
+    }
+
     private isFinished = (): boolean => {
-        return this._waiting.length + this._ready.length === 0;
+        return this._waiting.length + this._ready.length + this._running === 0;
     }
 
     public go = (jobs: number, simulate: boolean, done: () => void, error: () => void): void => {
@@ -221,6 +231,7 @@ export class Run {
                     return;
                 }
 
+                this.complete(currentTask);
                 currentTask.setDone();
 
                 jobs += currentTask.jobs;
@@ -248,6 +259,7 @@ export class Run {
             const job = jobs;
 
             info("[" + job + "] " + task.name);
+            this.start(task);
             if (task.command && !simulate) {
                 info("[" + job + "] " + task.name + ": " + task.command);
 
@@ -259,12 +271,12 @@ export class Run {
                 }
 
                 child.on("close", (code) => runNext(task, code, job));
+
+                if (jobs !== 0) {
+                    runTask();
+                }
             } else {
                 runNext(task, 0, job);
-            }
-
-            if (jobs !== 0) {
-                runTask();
             }
         };
 
