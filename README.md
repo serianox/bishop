@@ -22,7 +22,7 @@
 
 Bishop is a build tool to declare, visualize and run tasks and their dependencies in a build pipeline.
 
-Bishop is built with Bishop.
+Bishop is currently *not* built with Bishop due to [issue #15](https://github.com/serianox/bishop/issues/15).
 
 ## Usage
 
