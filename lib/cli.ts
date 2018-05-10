@@ -33,6 +33,7 @@ program
 
 export const main = (argv: string[]): number => {
     program.parse(argv);
+    const start = Date.now();
 
     const options = program as Options;
 
@@ -44,6 +45,7 @@ export const main = (argv: string[]): number => {
         setLevel(Level.DEBUG);
     }
 
+    info("Bishop " + version);
     debug(options.file!);
 
     const goals = new Array<string>();
@@ -73,7 +75,12 @@ export const main = (argv: string[]): number => {
         return 1;
     }
 
-    tasks.go(options.jobs || os.cpus().length, options.simulate || false, () => null, () => process.exit(1));
+    const complete = (then: () => void): () => void => () => {
+        info("Completed in " + (Date.now() - start) / 1000 + "s");
+        then();
+    };
+
+    tasks.go(options.jobs || os.cpus().length, options.simulate || false, complete(() => { /**/ }), complete(() => process.exit(1)));
 
     return 0;
 };

@@ -55,6 +55,7 @@ export class Task {
         let cmd = getStringOr("cmd");
 
         if (cmd) {
+            // do string interpolation in the command
             cmd = cmd
                 .split(/(\([a-zA-Z][a-zA-Z0-9]*(?:[-_.][a-zA-Z0-9]+)*\))/)
                 .map(_ => {
@@ -230,21 +231,11 @@ export class Run {
 
     public go = (jobs: number, simulate: boolean, done: () => void, error: () => void): void => {
         const runTask = (): void => {
-            const runNext = (currentTask: Task, code: number, jobNumber: number): void => {
-                info("[" + jobNumber + "] " + currentTask.name + ": returned " + code.toString());
-
-                if (code !== 0 && !currentTask.allowFailure) {
-                    if (error) {
-                        error();
-                    }
-
-                    return;
-                }
+            const runNext = (currentTask: Task): void => {
+                jobs += currentTask.jobs;
 
                 this.complete(currentTask);
                 currentTask.setDone();
-
-                jobs += currentTask.jobs;
 
                 runTask();
             };
@@ -272,6 +263,7 @@ export class Run {
 
             info("[" + job + "] " + task.name);
             this.start(task);
+            const start = Date.now();
             if (task.command && !simulate) {
                 info("[" + job + "] " + task.name + ": " + task.command);
 
@@ -282,13 +274,26 @@ export class Run {
                     child.stderr.on("data", (data) => process.stderr.write(data.toString()));
                 }
 
-                child.on("close", (code) => runNext(task, code, job));
+                child.on("close", (code) => {
+                    info("[" + job + "] " + task.name + ": completed in " + (Date.now() - start) / 1000 + "s");
+                    info("[" + job + "] " + task.name + ": returned " + code);
+
+                    if (code !== 0 && !task.allowFailure) {
+                        if (error) {
+                            error();
+                        }
+
+                        return;
+                    }
+
+                    runNext(task);
+                });
 
                 if (jobs !== 0) {
                     runTask();
                 }
             } else {
-                runNext(task, 0, job);
+                runNext(task);
             }
         };
 
