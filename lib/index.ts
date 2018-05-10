@@ -199,12 +199,13 @@ export class Run {
         const waiting: Task[] = [];
 
         this._waiting.forEach(task => {
-            if (task.dependencies.reduce((result, dependency) => result && dependency.state !== State.Done, true)) {
-                debug("task `" + task.name + "` left in waiting set");
-                waiting.push(task);
-            } else {
+            // tasks in the waiting set are ensured to have > 1 dependency
+            if (task.dependencies.reduce((result, dependency) => result && dependency.state === State.Done, true)) {
                 debug("task `" + task.name + "` moved to ready set");
                 this._ready.push(task);
+            } else {
+                debug("task `" + task.name + "` left in waiting set");
+                waiting.push(task);
             }
         });
 
