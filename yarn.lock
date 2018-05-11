@@ -3,8 +3,8 @@
 
 
 "@serianox/bishop@^1.5.0":
-  version "1.5.2"
-  resolved "https://registry.yarnpkg.com/@serianox/bishop/-/bishop-1.5.2.tgz#acd6c901d6f14a1b0bdcd492070a119e7eaf4ade"
+  version "1.5.3"
+  resolved "https://registry.yarnpkg.com/@serianox/bishop/-/bishop-1.5.3.tgz#0fd2e1772fe99e6cf19c3e1262318377112db3be"
   dependencies:
     "@types/parsimmon" "^1.6.1"
     commander "^2.14.1"
