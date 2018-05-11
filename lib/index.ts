@@ -11,6 +11,11 @@ export enum State {
     Done,
 }
 
+export enum Mark {
+    Marked,
+    Unmarked,
+}
+
 export class Task {
     public constructor(
         public readonly name: string,
@@ -22,6 +27,8 @@ export class Task {
     ) { }
 
     private _state: State = State.Unreachable;
+
+    public mark: Mark = Mark.Unmarked;
 
     private _dependencies: Task[] = [];
 
@@ -152,6 +159,32 @@ export class Run {
             if (map.get(goal) === undefined) {
                 return new BSError("unresolved goal ̀ " + goal + "`");
             }
+        }
+
+        const detectCycles = (children: Task[]): undefined | BSError => {
+            for (const child of children) {
+                if (child.mark === Mark.Marked) {
+                    return new BSError("cycle detected for task `" + child.name + "`");
+                }
+
+                child.mark = Mark.Marked;
+
+                const result = detectCycles(child.dependencies);
+
+                if (result instanceof BSError) {
+                    return result;
+                }
+
+                child.mark = Mark.Unmarked;
+            }
+
+            return;
+        };
+
+        const cycles = detectCycles(goals.map(_ => map.get(_)!));
+
+        if (cycles instanceof BSError) {
+            return cycles;
         }
 
         const computeReachable = (closed: Task[], open: Task[]): Task[] | BSError => {
