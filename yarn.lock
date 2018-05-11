@@ -2,9 +2,9 @@
 # yarn lockfile v1
 
 
-"@serianox/bishop@^1.0.0":
-  version "1.5.1"
-  resolved "https://registry.yarnpkg.com/@serianox/bishop/-/bishop-1.5.1.tgz#c914d9ce0cf42f653371743748f4f13122b1c23c"
+"@serianox/bishop@^1.5.0":
+  version "1.5.2"
+  resolved "https://registry.yarnpkg.com/@serianox/bishop/-/bishop-1.5.2.tgz#acd6c901d6f14a1b0bdcd492070a119e7eaf4ade"
   dependencies:
     "@types/parsimmon" "^1.6.1"
     commander "^2.14.1"
@@ -63,12 +63,12 @@
   resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-2.2.48.tgz#3523b126a0b049482e1c3c11877460f76622ffab"
 
 "@types/node@*":
-  version "10.0.6"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.0.6.tgz#c0bce8e539bf34c1b850c13ff46bead2fecc2e58"
+  version "10.0.8"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.0.8.tgz#37b4d91d4e958e4c2ba0be2b86e7ed4ff19b0858"
 
 "@types/node@^9.4.6":
-  version "9.6.14"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-9.6.14.tgz#79b5167f822d5fb0fb2b5c92ca150391ae0f2542"
+  version "9.6.15"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-9.6.15.tgz#8a5a313ea0a43a95277235841be5d3f5fb3dfeda"
 
 "@types/parsimmon@^1.6.1":
   version "1.6.2"
