@@ -19,17 +19,17 @@ suite("Functional", () => {
         test("--simulate", () => {
             assert.equal(main("/usr/bin/node bs --simulate".split(" ")), 0);
         });
-        test("-s", () => {
-            assert.equal(main("/usr/bin/node bs -s".split(" ")), 0);
-        });
-        test("--silent", () => {
-            assert.equal(main("/usr/bin/node bs --silent".split(" ")), 0);
-        });
         test("-d", () => {
             assert.equal(main("/usr/bin/node bs -d".split(" ")), 0);
         });
         test("--debug", () => {
             assert.equal(main("/usr/bin/node bs --debug".split(" ")), 0);
+        });
+        test("-s", () => {
+            assert.equal(main("/usr/bin/node bs -s".split(" ")), 0);
+        });
+        test("--silent", () => {
+            assert.equal(main("/usr/bin/node bs --silent".split(" ")), 0);
         });
     });
 });
