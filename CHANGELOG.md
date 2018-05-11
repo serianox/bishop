@@ -12,13 +12,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 -->
 
-## [1.5.2] - 2018-05-11
-[1.5.2]: https://github.com/serianox/bishop/compare/v1.5.2...v1.5.1
+## [1.5.3] - 2018-05-11
+[1.5.3]: https://github.com/serianox/bishop/compare/v1.5.3...v1.5.2
+### Changed
+- add execution times in stdout
 ### Fixed
 - detect cycles in dependencies
 
-## [1.5.1] - 2018-05-10
-[1.5.1]: https://github.com/serianox/bishop/compare/v1.5.1...v1.5.2
+## [1.5.2] - 2018-05-10
+[1.5.2]: https://github.com/serianox/bishop/compare/v1.5.1...v1.5.2
 ### Fixed
 - don't run a task when all its dependencies are not complete
 
