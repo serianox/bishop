@@ -16,6 +16,7 @@
   "scripts": {
     "build": "yarn run bs build",
     "test": "yarn run bs test",
+    "prepare": "yarn run bs publish",
     "bs": "bs"
   },
   "keywords": [],

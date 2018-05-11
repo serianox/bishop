@@ -1,6 +1,8 @@
-ci: lint style build test cov-cli codecov doc
+ci: lint style build test cov-cli codecov
 
-commit: lint style build test cov-cli
+commit: lint style build test cov-cli cov-html
+
+publish: build doc
 
 codecov: test
 	cmd = codecov -f coverage/*.json
