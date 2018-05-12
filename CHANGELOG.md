@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 -->
 
+## [1.5.4] - 2018-05-12
+[1.5.4]: https://github.com/serianox/bishop/compare/v1.5.4...v1.5.3
+### Fixed
+- prevent a task from declaring more jobs than available
+
 ## [1.5.3] - 2018-05-11
 [1.5.3]: https://github.com/serianox/bishop/compare/v1.5.3...v1.5.2
 ### Changed
