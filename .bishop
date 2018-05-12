@@ -37,4 +37,4 @@ lint:
 	allow-failure
 
 doc:
-	cmd = typedoc --mode modules --out dist/doc lib --json doc/doc.json --theme minimal
+	cmd = typedoc --mode modules --out dist/doc lib --theme minimal
