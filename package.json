@@ -1,6 +1,6 @@
 {
   "name": "@serianox/bishop",
-  "version": "1.5.3",
+  "version": "1.5.4",
   "description": "Bishop build tool",
   "directories": {
     "bin": "dist/bin",
