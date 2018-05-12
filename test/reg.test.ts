@@ -31,4 +31,14 @@ task3:
         const tasks = Run.getInstance(data, ["task1"], new Map<string, string>());
         assert.instanceOf(tasks, BSError);
     });
+    test("issue #18", (done) => {
+        const data = `
+task:
+    cmd = true
+    jobs = 5
+`;
+        const tasks = Run.getInstance(data, ["task"], new Map<string, string>());
+        assert.instanceOf(tasks, Run);
+        (tasks as Run).go(4, false, done, assert.fail);
+    });
 });
