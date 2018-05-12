@@ -22,13 +22,15 @@ export class Task {
         private readonly dependenciesName: string[],
         public readonly allowFailure: boolean,
         public readonly silent: boolean,
-        public readonly jobs: number,
+        public readonly requestedJobs: number,
         public readonly command?: string,
     ) { }
 
     private _state: State = State.Unreachable;
 
     public mark: Mark = Mark.Unmarked;
+
+    public currentJobs: number = 0;
 
     private _dependencies: Task[] = [];
 
@@ -263,9 +265,11 @@ export class Run {
     }
 
     public go = (jobs: number, simulate: boolean, done: () => void, error: () => void): void => {
+        const maxJobs = jobs;
+
         const runTask = (): void => {
             const runNext = (currentTask: Task): void => {
-                jobs += currentTask.jobs;
+                jobs += currentTask.currentJobs;
 
                 this.complete(currentTask);
                 currentTask.setDone();
@@ -284,13 +288,15 @@ export class Run {
                 return;
             }
 
-            if (task.jobs > jobs) {
-                debug("task `" + task.name + "` not run, need " + task.jobs + " job(s), got " + jobs);
-                // BUG task dropped here if not enough jobs are available
+            const currentJobs = Math.min(task.requestedJobs, jobs);
+
+            if (currentJobs > jobs) {
+                debug("task `" + task.name + "` not run now, need " + currentJobs + " job(s), got " + jobs);
                 return;
             }
 
-            jobs -= task.jobs;
+            task.currentJobs = currentJobs;
+            jobs -= task.currentJobs;
 
             const job = jobs;
 
