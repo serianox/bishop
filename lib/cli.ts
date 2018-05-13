@@ -5,7 +5,7 @@ import { BSError } from "./error";
 import { Run, Task } from "./index";
 import { debug, err, info, Level, setLevel } from "./logging";
 
-export interface Options {
+interface Options {
     file?: string;
     jobs?: number;
     simulate?: boolean;
@@ -31,7 +31,13 @@ program
     .option("-s, --silent", "set silent")
     .option("-d, --debug", "set verbose");
 
-export const main = (argv: string[]): number => {
+/**
+ * The main entry point of Bishop.
+ *
+ * @param argv the startup parameters as given on the command line
+ * @param done the callback once the execution is finished
+ */
+export const main = (argv: string[], done: (exitCode: number) => void): void => {
     program.parse(argv);
     const start = Date.now();
 
@@ -72,15 +78,15 @@ export const main = (argv: string[]): number => {
         if (tasks.stack) {
             debug(tasks.stack);
         }
-        return 1;
+        done(1);
+        return;
     }
 
-    const complete = (then: () => void): () => void => () => {
+    const complete = (exitCode: number): () => void => () => {
         info("Completed in " + (Date.now() - start) / 1000 + "s");
-        then();
+        done(exitCode);
     };
 
-    tasks.go(options.jobs || os.cpus().length, options.simulate || false, complete(() => { /**/ }), complete(() => process.exit(1)));
-
-    return 0;
+    tasks.go(options.jobs || os.cpus().length, options.simulate || false, complete(0), complete(1));
+    return;
 };
