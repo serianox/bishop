@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 -->
 
+## [1.6.0] - 2018-05-15
+[1.6.0]: https://github.com/serianox/bishop/compare/v1.6.0...v1.5.4
+### Added
+- allow to specify weight of task
+
 ## [1.5.4] - 2018-05-12
 [1.5.4]: https://github.com/serianox/bishop/compare/v1.5.4...v1.5.3
 ### Fixed
