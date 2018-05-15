@@ -23,6 +23,7 @@ export class Task {
         public readonly allowFailure: boolean,
         public readonly silent: boolean,
         public readonly requestedJobs: number,
+        public readonly weight: number,
         public readonly command?: string,
     ) { }
 
@@ -60,6 +61,7 @@ export class Task {
         const allowFailure = getBooleanOr("allow-failure", false);
         const silent = getBooleanOr("silent", false);
         const jobs = getNumberOr("jobs", 1);
+        const weight = getNumberOr("weight", 0);
 
         let cmd = getStringOr("cmd");
 
@@ -89,7 +91,7 @@ export class Task {
                 .join("");
         }
 
-        return new Task(input.name, input.dependencies, allowFailure, silent, jobs, cmd);
+        return new Task(input.name, input.dependencies, allowFailure, silent, jobs, weight, cmd);
     }
 
     public resolve = (tasks: Map<string, Task>): undefined | BSError => {

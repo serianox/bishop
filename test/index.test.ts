@@ -77,5 +77,19 @@ task1:
             assert.instanceOf(tasks, Run);
             (tasks as Run).go(1, false, assert.fail, done);
         });
+        test("weight", (done) => {
+            const data = `
+second:
+    cmd = rm VMDg7HUWQM
+    weight = -1
+
+first:
+    cmd = touch VMDg7HUWQM
+    weight = 1
+`;
+            const tasks = Run.getInstance(data, ["second", "first"], new Map<string, string>());
+            assert.instanceOf(tasks, Run);
+            (tasks as Run).go(1, false, done, assert.fail);
+        });
     });
 });
