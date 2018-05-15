@@ -2,9 +2,9 @@
 # yarn lockfile v1
 
 
-"@serianox/bishop@^1.5.0":
-  version "1.5.4"
-  resolved "https://registry.yarnpkg.com/@serianox/bishop/-/bishop-1.5.4.tgz#ca965ce37b4fbd5925960c1321b26d42d7672ea4"
+"@serianox/bishop@^1.6.0":
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/@serianox/bishop/-/bishop-1.6.0.tgz#dada240a19bbdc7294c99bd3550ba24bd917ff47"
   dependencies:
     "@types/parsimmon" "^1.6.1"
     commander "^2.14.1"
