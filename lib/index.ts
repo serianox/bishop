@@ -256,6 +256,8 @@ export class Run {
 
         this._waiting = waiting;
 
+        this._ready.sort((l, r) => l.weight - r.weight);
+
         return this._ready.pop();
     }
 
