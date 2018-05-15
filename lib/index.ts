@@ -141,13 +141,20 @@ export class Run {
         }
 
         const map = new Map<string, Task>();
-        const declarations: Declaration[] = ast.filter((_): _ is Declaration => _ instanceof Declaration);
+        const declarations = ast.filter((_): _ is Declaration => _ instanceof Declaration);
 
-        const tasks = declarations.map(_ => {
-            const task = Task.getInstance(_, options);
+        const tasks = new Array<Task>();
+
+        for (const declaration of declarations) {
+            const task = Task.getInstance(declaration, options);
+
+            if (map.get(task.name)) {
+                return new BSError("duplicated task `" + task.name + "`");
+            }
+
             map.set(task.name, task);
-            return task;
-        });
+            tasks.push(task);
+        }
 
         for (const task of tasks) {
             const result = task.resolve(map);

@@ -35,6 +35,14 @@ task3:
             const tasks = Run.getInstance(data, ["task2"], new Map<string, string>());
             assert.instanceOf(tasks, BSError);
         });
+        test("duplicated task", () => {
+            const data = `
+task1:
+task1:
+`;
+            const tasks = Run.getInstance(data, ["task1"], new Map<string, string>());
+            assert.instanceOf(tasks, BSError);
+        });
         test(".bishop file", (done) => {
             const tasks = Run.getInstance(path.parse(".bishop"), ["ci"], new Map<string, string>());
             assert.instanceOf(tasks, Run);
