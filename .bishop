@@ -15,11 +15,13 @@ cov-cli: test
 
 test: build
 	cmd = nyc --reporter=json mocha --require source-map-support/register --ui tdd --use_strict --reporter mochawesome --timeout 5000 dist/test/**/*.test.js
+	weight = 10
 
 build: transpile copy-bin
 
 transpile:
 	cmd = tsc
+	weight = 10
 
 copy-bin:
 	cmd = cp -rpu bin dist
