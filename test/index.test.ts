@@ -91,5 +91,50 @@ first:
             assert.instanceOf(tasks, Run);
             (tasks as Run).go(1, false, done, assert.fail);
         });
+        test("not enough jobs", (done) => {
+            const data = `
+third: first second
+    cmd = rm KCqTvU54zB
+
+second:
+    jobs = 2
+    cmd = touch KCqTvU54zB
+
+first:
+    weight = 10
+`;
+            const tasks = Run.getInstance(data, ["third"], new Map<string, string>());
+            assert.instanceOf(tasks, Run);
+            (tasks as Run).go(2, false, done, assert.fail);
+        });
+    });
+    suite("interpolation", () => {
+        test("no replacement", (done) => {
+            const data = `
+task:
+    cmd = echo foo
+`;
+            const tasks = Run.getInstance(data, ["task"], new Map<string, string>());
+            assert.instanceOf(tasks, Run);
+            (tasks as Run).go(1, false, done, assert.fail);
+        });
+        test("no match", (done) => {
+            const data = `
+task:
+    cmd = echo "(foo)"
+`;
+            const tasks = Run.getInstance(data, ["task"], new Map<string, string>());
+            assert.instanceOf(tasks, Run);
+            (tasks as Run).go(1, false, done, assert.fail);
+        });
+        test("command line", (done) => {
+            const data = `
+task:
+    cmd = echo "(foo)"
+`;
+            const tasks = Run.getInstance(data, ["task"], new Map<string, string>([["foo", "foo"]]));
+            assert.instanceOf(tasks, Run);
+            (tasks as Run).go(1, false, done, assert.fail);
+        });
     });
 });

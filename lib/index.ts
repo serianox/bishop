@@ -86,6 +86,8 @@ export class Task {
                         return replacement;
                     }
 
+                    warn("command interpolation failed for task `" + input.name + "`: value `" + match[1] + "` not found");
+
                     return _;
                 })
                 .join("");
@@ -198,7 +200,7 @@ export class Run {
             return cycles;
         }
 
-        const computeReachable = (closed: Task[], open: Task[]): Task[] | BSError => {
+        const computeReachable = (closed: Task[], open: Task[]): Task[] => {
             const next = open.pop();
 
             if (next === undefined) {
@@ -218,10 +220,6 @@ export class Run {
         };
 
         const reachable = computeReachable([], goals.map(_ => map.get(_)!));
-
-        if (reachable instanceof BSError) {
-            return reachable;
-        }
 
         const ready: Task[] = [];
         const waiting: Task[] = [];
