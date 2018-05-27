@@ -3,7 +3,8 @@
 [![Build Status][travis-image]][travis-url]
 [![Issues Coverage][codecov-image]][codecov-url]
 [![Maintainability][codeclimate-image]][codeclimate-url]
-[![Dependency Status][dependencyci-image]][dependencyci-url]
+[![Dependencies Status][david-image]][david-url]
+[![Dependencies Status][david-dev-image]][david-dev-url]
 
 [npm-url]: https://www.npmjs.com/package/@serianox/bishop
 [npm-image]: https://badge.fury.io/js/%40serianox%2Fbishop.svg
@@ -17,8 +18,11 @@
 [codeclimate-url]: https://codeclimate.com/github/serianox/bishop/maintainability
 [codeclimate-image]: https://api.codeclimate.com/v1/badges/9873c1075d2af8ade0ac/maintainability
 
-[dependencyci-url]: https://dependencyci.com/github/serianox/bishop
-[dependencyci-image]: https://dependencyci.com/github/serianox/bishop/badge
+[david-url]: https://david-dm.org/serianox/bishop
+[david-image]: https://david-dm.org/serianox/bishop/status.svg
+
+[david-dev-url]: https://david-dm.org/serianox/bishop?type=dev
+[david-dev-image]: https://david-dm.org/serianox/bishop/dev-status.svg
 
 Bishop is a build tool to declare, visualize and run tasks and their dependencies in a build pipeline.
 
@@ -49,7 +53,7 @@ test: build
 	cmd = nyc --reporter=json mocha --require source-map-support/register --ui tdd --use_strict dist/test/**/*.test.js
 	allow-failure
 	silent
-  weight = 10
+	weight = 10
 ```
 
 ## License
