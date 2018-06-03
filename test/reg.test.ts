@@ -41,4 +41,19 @@ task:
         assert.instanceOf(tasks, Run);
         (tasks as Run).go(4, false, done, assert.fail);
     });
+    test("issue #20", (done) => {
+        const data = `
+first: second third
+    cmd = rm mizpvbyLLW
+second:
+    cmd = touch mizpvbyLLW
+    jobs = 2
+third:
+    cmd = sleep 1
+    weight = 10
+`;
+        const tasks = Run.getInstance(data, ["first"], new Map<string, string>());
+        assert.instanceOf(tasks, Run);
+        (tasks as Run).go(2, false, done, assert.fail);
+    });
 });
