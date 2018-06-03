@@ -376,7 +376,7 @@ export class Run {
                 return;
             }
 
-            const currentJobs = Math.min(task.requestedJobs, jobs);
+            const currentJobs = Math.min(task.requestedJobs, maxJobs);
 
             if (currentJobs > jobs) {
                 debug("task `" + task.name + "` not run now, need " + currentJobs + " job(s), got " + jobs);
