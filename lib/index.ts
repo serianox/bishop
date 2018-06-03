@@ -4,6 +4,7 @@ import { BSError } from "./error";
 import { debug, err, info, warn } from "./logging";
 import { AST, Comment, Declaration, Option, parseConfiguration } from "./parser";
 
+/** The different states for a task. */
 export enum State {
     Unreachable,
     NotStarted,
@@ -11,12 +12,27 @@ export enum State {
     Done,
 }
 
+/** A mark for running various graph algorithms. */
 export enum Mark {
     Marked,
     Unmarked,
 }
 
+/**
+ * A Bishop task.
+ */
 export class Task {
+    /**
+     * Default constructor.
+     *
+     * @param name the task's name
+     * @param dependenciesName the names of the task's dependencies
+     * @param allowFailure `true` if the build should not fail when the task returns non-zero
+     * @param silent `true` if the task should not write to console
+     * @param requestedJobs number of jobs this task consumme
+     * @param weight weight of the task
+     * @param command command run by the task
+     */
     public constructor(
         public readonly name: string,
         private readonly dependenciesName: string[],
@@ -27,18 +43,31 @@ export class Task {
         public readonly command?: string,
     ) { }
 
+    /** Current state of the task. */
     private _state: State = State.Unreachable;
 
+    /** Mark of the task for running graph algorithms. */
     public mark: Mark = Mark.Unmarked;
 
+    /** Number of jobs the task is currently consuming. */
     public currentJobs: number = 0;
 
+    /** List of task's dependencies. */
     private _dependencies: Task[] = [];
 
+    /** Current state of the task. */
     public get state(): State { return this._state; }
 
+    /** List of task's dependencies. */
     public get dependencies(): Task[] { return this._dependencies.slice(); }
 
+    /**
+     * Create an instance of `Task` from an instance of `Declaration`.
+     *
+     * @param input the instance of Declaration
+     * @param options the list of options applicable to the task
+     * @return the instance of `Task`
+     */
     public static getInstance = (input: Declaration, options: Map<string, string>): Task => {
         const getBooleanOr = (name: string, or: boolean): boolean => {
             const search = input.options.find(_ => _.name === name);
@@ -96,6 +125,13 @@ export class Task {
         return new Task(input.name, input.dependencies, allowFailure, silent, jobs, weight, cmd);
     }
 
+    /**
+     * Resolve the task's dependencies from their names to their actual instance of `Task`. Ensure that no task have
+     * undeclared dependency.
+     *
+     * @param tasks the map of tasks using their respective names as key
+     * @return undefined, or `BSError` in case of error
+     */
     public resolve = (tasks: Map<string, Task>): undefined | BSError => {
         for (const dependencyName of this.dependenciesName) {
             const dependency = tasks.get(dependencyName);
@@ -110,12 +146,14 @@ export class Task {
         return;
     }
 
+    /** Set this task as not started. */
     public setNotStarted = () => {
         if (this._state === State.Unreachable) {
             this._state = State.NotStarted;
         }
     }
 
+    /** Set this task as done. */
     public setDone = () => {
         if (this._state === State.NotStarted) {
             // TODO
@@ -124,19 +162,31 @@ export class Task {
     }
 }
 
+/**
+ * An instance of a Bishop execution run.
+ */
 export class Run {
+    /**
+     * Default constructor.
+     *
+     * @param _reachable the list of reachable tasks
+     * @param _ready the list of tasks ready to run
+     * @param _waiting the list of tasks waiting on their dependencies
+     */
     private constructor(
         private _reachable: Task[],
         private _ready: Task[],
         private _waiting: Task[],
     ) { }
 
-    // public get reachable(): Task[] { return this._reachable.slice(); }
-
-    // public get ready(): Task[] { return this._ready.slice(); }
-
-    // public get waiting(): Task[] { return this._waiting.slice(); }
-
+    /**
+     * Create an instance of `Run`.
+     *
+     * @param input the input as either a `ParsedPath`, or a `string` representing a Bishop file's content
+     * @param goals the list of tasks declared as specific goals
+     * @param options the list of global options
+     * @return an instance of `Run`, or an instance of `BSError` if the creation fails
+     */
     public static getInstance = (input: string | ParsedPath, goals: string[], options: Map<string, string>): Run | BSError => {
         const ast = parseConfiguration(input);
 
@@ -235,6 +285,11 @@ export class Run {
         return new Run(reachable, ready, waiting);
     }
 
+    /**
+     * Update the internal state and pop the next task that should be run.
+     *
+     * @return the next task that should be run, or `undefined` if no task are available.
+     */
     private next = (): Task | undefined => {
         debug("waiting tasks: " + this._waiting.map(_ => "`" + _.name + "`").join(", "));
         debug("ready tasks: " + this._ready.map(_ => "`" + _.name + "`").join(", "));
@@ -259,20 +314,44 @@ export class Run {
         return this._ready.pop();
     }
 
+    /** The number of tasks currently running. */
     private _running: number = 0;
 
+    /**
+     * Start a new task.
+     *
+     * @param task the task to run
+     */
     private start = (task: Task): void => {
         ++this._running;
     }
 
+    /**
+     * Complete the execution of a task.
+     *
+     * @param task the task run
+     */
     private complete = (task: Task): void => {
         --this._running;
     }
 
+    /**
+     * Check if this run is finished.
+     *
+     * @return `true` if all the tasks have been run, `false` otherwise
+     */
     private isFinished = (): boolean => {
         return this._waiting.length + this._ready.length + this._running === 0;
     }
 
+    /**
+     * Start the execution.
+     *
+     * @param jobs the number of parallel jobs available
+     * @param simulate `true` if no task should be really executed
+     * @param done a callback when execution completes without error
+     * @param error a callback when execution completes with an error
+     */
     public go = (jobs: number, simulate: boolean, done: () => void, error: () => void): void => {
         const maxJobs = jobs;
 

@@ -5,6 +5,9 @@ import { BSError } from "./error";
 import { Run, Task } from "./index";
 import { debug, err, info, Level, setLevel } from "./logging";
 
+/**
+ * The command line options.
+ */
 interface Options {
     file?: string;
     jobs?: number;
@@ -14,6 +17,7 @@ interface Options {
     args: string[];
 }
 
+/** The version of this module from the "package.json" file. */
 const version = (() => {
     try {
         return require("../../package.json").version;
