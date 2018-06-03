@@ -148,17 +148,29 @@ export class Task {
 
     /** Set this task as not started. */
     public setNotStarted = () => {
-        if (this._state === State.Unreachable) {
-            this._state = State.NotStarted;
+        if (this._state !== State.Unreachable) {
+            warn("Setting `" + this.name + "` as state notStarted, but was in state `" + this.state + "`");
         }
+
+        this._state = State.NotStarted;
+    }
+
+    /** Set this task as in progress. */
+    public setInProgress = () => {
+        if (this._state !== State.NotStarted) {
+            warn("Setting `" + this.name + "` as state inProgress, but was in state `" + this.state + "`");
+        }
+
+        this._state = State.InProgress;
     }
 
     /** Set this task as done. */
     public setDone = () => {
-        if (this._state === State.NotStarted) {
-            // TODO
-            this._state = State.Done;
+        if (this._state !== State.InProgress) {
+            warn("Setting `" + this.name + "` as state Done, but was in state `" + this.state + "`");
         }
+
+        this._state = State.Done;
     }
 }
 
@@ -294,24 +306,29 @@ export class Run {
         debug("waiting tasks: " + this._waiting.map(_ => "`" + _.name + "`").join(", "));
         debug("ready tasks: " + this._ready.map(_ => "`" + _.name + "`").join(", "));
 
+        // remove tasks in the ready set that have already been started
+        const ready = this._ready.filter(task => task.state === State.NotStarted);
+
         const waiting: Task[] = [];
 
         this._waiting.forEach(task => {
             // tasks in the waiting set are ensured to have > 1 dependency
             if (task.dependencies.reduce((result, dependency) => result && dependency.state === State.Done, true)) {
                 debug("task `" + task.name + "` moved to ready set");
-                this._ready.push(task);
+                ready.push(task);
             } else {
                 debug("task `" + task.name + "` left in waiting set");
                 waiting.push(task);
             }
         });
 
+        ready.sort((l, r) => l.weight - r.weight);
+
+        this._ready = ready;
+
         this._waiting = waiting;
 
-        this._ready.sort((l, r) => l.weight - r.weight);
-
-        return this._ready.pop();
+        return this._ready[0];
     }
 
     /** The number of tasks currently running. */
@@ -390,6 +407,7 @@ export class Run {
 
             info("[" + job + "] " + task.name);
             this.start(task);
+            task.setInProgress();
             const start = Date.now();
             if (task.command && !simulate) {
                 info("[" + job + "] " + task.name + ": " + task.command);
