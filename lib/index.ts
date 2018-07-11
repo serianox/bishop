@@ -322,7 +322,7 @@ export class Run {
             }
         });
 
-        ready.sort((l, r) => l.weight - r.weight);
+        ready.sort((l, r) => r.weight - l.weight);
 
         this._ready = ready;
         this._waiting = waiting;
