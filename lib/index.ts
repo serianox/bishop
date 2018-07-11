@@ -325,7 +325,6 @@ export class Run {
         ready.sort((l, r) => l.weight - r.weight);
 
         this._ready = ready;
-
         this._waiting = waiting;
 
         return this._ready[0];
@@ -382,14 +381,13 @@ export class Run {
                 runTask();
             };
 
-            if (this.isFinished()) {
-                done();
-                return;
-            }
-
             const task = this.next();
 
             if (!task) {
+                if (this.isFinished()) {
+                    done();
+                }
+
                 return;
             }
 
