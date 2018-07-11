@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 -->
 
+## [1.6.1] - 2018-07-11
+[1.6.1]: https://github.com/serianox/bishop/compare/v1.6.1...v1.6.0
+### Fixed
+- don't discard task if not enough jobs are available 
+
 ## [1.6.0] - 2018-05-15
 [1.6.0]: https://github.com/serianox/bishop/compare/v1.6.0...v1.5.4
 ### Added
