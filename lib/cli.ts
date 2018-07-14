@@ -41,7 +41,7 @@ program
  * @param argv the startup parameters as given on the command line
  * @param done the callback once the execution is finished
  */
-export const main = (argv: string[], done: (exitCode: number) => void): void => {
+export const main = (argv: string[]): Promise<number> => {
     program.parse(argv);
     const start = Date.now();
 
@@ -77,20 +77,31 @@ export const main = (argv: string[], done: (exitCode: number) => void): void => 
 
     const tasks = Run.getInstance(path.parse(options.file || ".bishop"), goals, args);
 
-    if (tasks instanceof BSError) {
-        err(tasks.message);
-        if (tasks.stack) {
-            debug(tasks.stack);
+    return new Promise((resolve, reject) => {
+        if (tasks instanceof BSError) {
+            err(tasks.message);
+
+            if (tasks.stack) {
+                debug(tasks.stack);
+            }
+
+            reject(new BSError(tasks));
+
+            return;
         }
-        done(1);
-        return;
-    }
 
-    const complete = (exitCode: number): () => void => () => {
-        info("Completed in " + (Date.now() - start) / 1000 + "s");
-        done(exitCode);
-    };
+        const complete = () => {
+            info("Completed in " + (Date.now() - start) / 1000 + "s");
+        };
 
-    tasks.go(options.jobs || os.cpus().length, options.simulate || false, complete(0), complete(1));
-    return;
+        return tasks.go(options.jobs || os.cpus().length, options.simulate || false)
+            .then(_ => {
+                complete();
+                resolve();
+            })
+            .catch(_ => {
+                complete();
+                reject(new BSError(_));
+            });
+    });
 };

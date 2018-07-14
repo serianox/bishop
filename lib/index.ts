@@ -368,78 +368,80 @@ export class Run {
      * @param done a callback when execution completes without error
      * @param error a callback when execution completes with an error
      */
-    public go = (jobs: number, simulate: boolean, done: () => void, error: () => void): void => {
-        const maxJobs = jobs;
+    public go = (jobs: number, simulate: boolean): Promise<void> => {
+        const run = this;
 
-        const runTask = (): void => {
-            const runNext = (currentTask: Task): void => {
-                jobs += currentTask.currentJobs;
+        return new Promise((resolve, reject) => {
+            const maxJobs = jobs;
 
-                this.complete(currentTask);
-                currentTask.setDone();
+            const runTask = (): void => {
+                const runNext = (currentTask: Task): void => {
+                    jobs += currentTask.currentJobs;
 
-                runTask();
-            };
+                    run.complete(currentTask);
+                    currentTask.setDone();
 
-            const task = this.next();
+                    runTask();
+                };
 
-            if (!task) {
-                if (this.isFinished()) {
-                    done();
-                }
+                const task = run.next();
 
-                return;
-            }
-
-            const currentJobs = Math.min(task.requestedJobs, maxJobs);
-
-            if (currentJobs > jobs) {
-                debug("task `" + task.name + "` not run now, need " + currentJobs + " job(s), got " + jobs);
-                return;
-            }
-
-            task.currentJobs = currentJobs;
-            jobs -= task.currentJobs;
-
-            const job = jobs;
-
-            info("[" + job + "] " + task.name);
-            this.start(task);
-            task.setInProgress();
-            const start = Date.now();
-            if (task.command && !simulate) {
-                info("[" + job + "] " + task.name + ": " + task.command);
-
-                const child = child_process.exec(task.command);
-
-                if (!task.silent) {
-                    child.stdout.on("data", (data) => process.stdout.write(data.toString()));
-                    child.stderr.on("data", (data) => process.stderr.write(data.toString()));
-                }
-
-                child.on("close", (code) => {
-                    info("[" + job + "] " + task.name + ": completed in " + (Date.now() - start) / 1000 + "s");
-                    info("[" + job + "] " + task.name + ": returned " + code);
-
-                    if (code !== 0 && !task.allowFailure) {
-                        if (error) {
-                            error();
-                        }
-
-                        return;
+                if (!task) {
+                    if (run.isFinished()) {
+                        resolve();
                     }
 
-                    runNext(task);
-                });
-
-                if (jobs !== 0) {
-                    runTask();
+                    return;
                 }
-            } else {
-                runNext(task);
-            }
-        };
 
-        runTask();
+                const currentJobs = Math.min(task.requestedJobs, maxJobs);
+
+                if (currentJobs > jobs) {
+                    debug("task `" + task.name + "` not run now, need " + currentJobs + " job(s), got " + jobs);
+                    return;
+                }
+
+                task.currentJobs = currentJobs;
+                jobs -= task.currentJobs;
+
+                const job = jobs;
+
+                info("[" + job + "] " + task.name);
+                run.start(task);
+                task.setInProgress();
+                const start = Date.now();
+                if (task.command && !simulate) {
+                    info("[" + job + "] " + task.name + ": " + task.command);
+
+                    const child = child_process.exec(task.command);
+
+                    if (!task.silent) {
+                        child.stdout.on("data", (data) => process.stdout.write(data.toString()));
+                        child.stderr.on("data", (data) => process.stderr.write(data.toString()));
+                    }
+
+                    child.on("close", (code) => {
+                        info("[" + job + "] " + task.name + ": completed in " + (Date.now() - start) / 1000 + "s");
+                        info("[" + job + "] " + task.name + ": returned " + code);
+
+                        if (code !== 0 && !task.allowFailure) {
+                            reject(new BSError("task returned an error (" + code + ")"));
+
+                            return;
+                        }
+
+                        runNext(task);
+                    });
+
+                    if (jobs !== 0) {
+                        runTask();
+                    }
+                } else {
+                    runNext(task);
+                }
+            };
+
+            runTask();
+        });
     }
 }

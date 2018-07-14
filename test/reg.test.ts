@@ -1,10 +1,9 @@
-import { assert } from "chai";
+import test from "ava";
 import { BSError } from "../lib/error";
 import { Run } from "../lib/index";
 
-suite("Non-regressions", () => {
-    test("issue #15", (done) => {
-        const data = `
+test("issue #15", async t => {
+    const data = `
 test: build
 	cmd = cat eWshfNIQ8g && rm eWshfNIQ8g
 
@@ -16,31 +15,31 @@ transpile:
 copy-bin:
 	cmd = true
 `;
-        const tasks = Run.getInstance(data, ["test"], new Map<string, string>());
-        assert.instanceOf(tasks, Run);
-        (tasks as Run).go(4, false, done, assert.fail);
-    });
-    test("issue #16", () => {
-        const data = `
+    const tasks = Run.getInstance(data, ["test"], new Map<string, string>());
+    t.true(tasks instanceof Run);
+    await t.notThrows((tasks as Run).go(4, false));
+});
+test("issue #16", async t => {
+    const data = `
 task1: task2 task3
 task2: task2
 task3:
 `;
-        const tasks = Run.getInstance(data, ["task1"], new Map<string, string>());
-        assert.instanceOf(tasks, BSError);
-    });
-    test("issue #18", (done) => {
-        const data = `
+    const tasks = Run.getInstance(data, ["task1"], new Map<string, string>());
+    t.true(tasks instanceof BSError);
+});
+test("issue #18", async t => {
+    const data = `
 task:
     cmd = true
     jobs = 5
 `;
-        const tasks = Run.getInstance(data, ["task"], new Map<string, string>());
-        assert.instanceOf(tasks, Run);
-        (tasks as Run).go(4, false, done, assert.fail);
-    });
-    test("issue #20", (done) => {
-        const data = `
+    const tasks = Run.getInstance(data, ["task"], new Map<string, string>());
+    t.true(tasks instanceof Run);
+    await t.notThrows((tasks as Run).go(4, false));
+});
+test("issue #20", async t => {
+    const data = `
 first: second third
     cmd = rm mizpvbyLLW
 second:
@@ -50,8 +49,7 @@ third:
     cmd = sleep 1
     weight = 10
 `;
-        const tasks = Run.getInstance(data, ["first"], new Map<string, string>());
-        assert.instanceOf(tasks, Run);
-        (tasks as Run).go(2, false, done, assert.fail);
-    });
+    const tasks = Run.getInstance(data, ["first"], new Map<string, string>());
+    t.true(tasks instanceof Run);
+    await t.notThrows((tasks as Run).go(2, false));
 });
