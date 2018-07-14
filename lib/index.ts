@@ -1,8 +1,8 @@
 import * as child_process from "child_process";
 import { ParsedPath } from "path";
 import { BSError } from "./error";
-import { debug, err, info, warn } from "./logging";
-import { AST, Comment, Declaration, Option, parseConfiguration } from "./parser";
+import { debug, info, warn } from "./logging";
+import { Declaration, parseConfiguration } from "./parser";
 
 /** The different states for a task. */
 export enum State {

@@ -2,7 +2,7 @@ import * as program from "commander";
 import * as os from "os";
 import * as path from "path";
 import { BSError } from "./error";
-import { Run, Task } from "./index";
+import { Run } from "./index";
 import { debug, err, info, Level, setLevel } from "./logging";
 
 /**

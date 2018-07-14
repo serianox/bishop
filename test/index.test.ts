@@ -1,8 +1,7 @@
 import { assert } from "chai";
 import * as path from "path";
 import { BSError } from "../lib/error";
-import { Run, Task } from "../lib/index";
-import { parseConfiguration } from "../lib/parser";
+import { Run } from "../lib/index";
 
 suite("Functional", () => {
     suite("#main()", () => {
