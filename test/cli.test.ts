@@ -28,3 +28,9 @@ test("-s", async t => {
 test("--silent", async t => {
     await t.notThrows(main("/usr/bin/node bs --silent".split(" ")));
 });
+test("target", async t => {
+    await t.notThrows(main("/usr/bin/node bs --simulate ci".split(" ")));
+});
+test("option", async t => {
+    await t.notThrows(main("/usr/bin/node bs --simulate tsconfig=tsconfig.json".split(" ")));
+});
