@@ -15,6 +15,12 @@
             }
         ],
         "no-console": false,
+        "one-line": [
+            true,
+            "check-else",
+            "check-open-brace",
+            "check-whitespace"
+        ],
         "typedef": false,
         "variable-name": [
             true,

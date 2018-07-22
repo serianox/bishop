@@ -368,7 +368,7 @@ export class Run {
      * @param done a callback when execution completes without error
      * @param error a callback when execution completes with an error
      */
-    public go = (jobs: number, simulate: boolean): Promise<void> => {
+    public go = (jobs: number, simulate: boolean): Promise<void | BSError> => {
         const run = this;
 
         return new Promise((resolve, reject) => {

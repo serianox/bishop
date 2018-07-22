@@ -41,7 +41,7 @@ program
  * @param argv the startup parameters as given on the command line
  * @param done the callback once the execution is finished
  */
-export const main = (argv: string[]): Promise<number> => {
+export const main = async (argv: string[]): Promise<void> => {
     program.parse(argv);
     const start = Date.now();
 
@@ -77,31 +77,26 @@ export const main = (argv: string[]): Promise<number> => {
 
     const tasks = Run.getInstance(path.parse(options.file || ".bishop"), goals, args);
 
-    return new Promise((resolve, reject) => {
-        if (tasks instanceof BSError) {
-            err(tasks.message);
+    if (tasks instanceof BSError) {
+        err(tasks.message);
 
-            if (tasks.stack) {
-                debug(tasks.stack);
-            }
-
-            reject(new BSError(tasks));
-
-            return;
+        if (tasks.stack) {
+            debug(tasks.stack);
         }
 
-        const complete = () => {
-            info("Completed in " + (Date.now() - start) / 1000 + "s");
-        };
+        throw new BSError(tasks);
+    }
 
-        return tasks.go(options.jobs || os.cpus().length, options.simulate || false)
-            .then(_ => {
-                complete();
-                resolve();
-            })
-            .catch(_ => {
-                complete();
-                reject(new BSError(_));
-            });
-    });
+    const complete = () => {
+        info("Completed in " + (Date.now() - start) / 1000 + "s");
+    };
+
+    const ret = await tasks.go(options.jobs || os.cpus().length, options.simulate || false);
+    complete();
+
+    if (ret instanceof BSError) {
+        throw new BSError(ret);
+    }
+
+    return;
 };
