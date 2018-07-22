@@ -68,7 +68,7 @@ task1:
     allow-failure = false
 `;
     const tasks = Run.getInstance(data, ["task1"], new Map<string, string>());
-    await t.notThrows(t.throws((tasks as Run).go(1, false)));
+    t.true(await (tasks as Run).go(1, false) instanceof BSError);
 });
 test("weight", async t => {
     const data = `

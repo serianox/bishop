@@ -425,7 +425,7 @@ export class Run {
                         info("[" + job + "] " + task.name + ": returned " + code);
 
                         if (code !== 0 && !task.allowFailure) {
-                            reject(new BSError("task returned an error (" + code + ")"));
+                            resolve(new BSError("task returned an error (" + code + ")"));
 
                             return;
                         }
