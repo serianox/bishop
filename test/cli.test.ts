@@ -2,35 +2,46 @@ import test from "ava";
 import { main } from "../lib/cli";
 
 test("implicit file", async t => {
-    await t.notThrows(main("/usr/bin/node bs".split(" ")));
+    const ret = await main("/usr/bin/node bs".split(" "));
+    t.is(ret, 0);
 });
 test("bad file", async t => {
-    await t.throws(main("/usr/bin/node bs -f znRBs7DhKp".split(" ")));
+    const ret = await main("/usr/bin/node bs -f znRBs7DhKp".split(" "));
+    t.not(ret, 0);
 });
 test(".bishop file", async t => {
-    await t.notThrows(main("/usr/bin/node bs -f .bishop".split(" ")));
+    const ret = await main("/usr/bin/node bs -f .bishop".split(" "));
+    t.is(ret, 0);
 });
 test("-S", async t => {
-    await t.notThrows(main("/usr/bin/node bs -S".split(" ")));
+    const ret = await main("/usr/bin/node bs -S".split(" "));
+    t.is(ret, 0);
 });
 test("--simulate", async t => {
-    await t.notThrows(main("/usr/bin/node bs --simulate".split(" ")));
+    const ret = await main("/usr/bin/node bs --simulate".split(" "));
+    t.is(ret, 0);
 });
 test("-d", async t => {
-    await t.notThrows(main("/usr/bin/node bs -d".split(" ")));
+    const ret = await main("/usr/bin/node bs -d".split(" "));
+    t.is(ret, 0);
 });
 test("--debug", async t => {
-    await t.notThrows(main("/usr/bin/node bs --debug".split(" ")));
+    const ret = await main("/usr/bin/node bs --debug".split(" "));
+    t.is(ret, 0);
 });
 test("-s", async t => {
-    await t.notThrows(main("/usr/bin/node bs -s".split(" ")));
+    const ret = await main("/usr/bin/node bs -s".split(" "));
+    t.is(ret, 0);
 });
 test("--silent", async t => {
-    await t.notThrows(main("/usr/bin/node bs --silent".split(" ")));
+    const ret = await main("/usr/bin/node bs --silent".split(" "));
+    t.is(ret, 0);
 });
 test("target", async t => {
-    await t.notThrows(main("/usr/bin/node bs --simulate ci".split(" ")));
+    const ret = await main("/usr/bin/node bs --simulate ci".split(" "));
+    t.is(ret, 0);
 });
 test("option", async t => {
-    await t.notThrows(main("/usr/bin/node bs --simulate tsconfig=tsconfig.json".split(" ")));
+    const ret = await main("/usr/bin/node bs --simulate tsconfig=tsconfig.json".split(" "));
+    t.is(ret, 0);
 });
