@@ -148,27 +148,21 @@ export class Task {
 
     /** Set this task as not started. */
     public setNotStarted = () => {
-        if (this._state !== State.Unreachable) {
-            warn("Setting `" + this.name + "` as state notStarted, but was in state `" + this.state + "`");
-        }
+        warn(this._state !== State.Unreachable, "Setting `" + this.name + "` as state notStarted, but was in state `" + this.state + "`");
 
         this._state = State.NotStarted;
     }
 
     /** Set this task as in progress. */
     public setInProgress = () => {
-        if (this._state !== State.NotStarted) {
-            warn("Setting `" + this.name + "` as state inProgress, but was in state `" + this.state + "`");
-        }
+        warn(this._state !== State.NotStarted, "Setting `" + this.name + "` as state inProgress, but was in state `" + this.state + "`");
 
         this._state = State.InProgress;
     }
 
     /** Set this task as done. */
     public setDone = () => {
-        if (this._state !== State.InProgress) {
-            warn("Setting `" + this.name + "` as state Done, but was in state `" + this.state + "`");
-        }
+        warn(this._state !== State.InProgress, "Setting `" + this.name + "` as state Done, but was in state `" + this.state + "`");
 
         this._state = State.Done;
     }

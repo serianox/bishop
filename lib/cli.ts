@@ -77,14 +77,18 @@ export const main = async (argv: string[]): Promise<number> => {
 
     const tasks = Run.getInstance(path.parse(options.file || ".bishop"), goals, args);
 
-    if (tasks instanceof BSError) {
-        err(tasks.message);
+    const error = (what: BSError) => {
+        err(what.message);
 
-        if (tasks.stack) {
-            debug(tasks.stack);
+        if (what.stack) {
+            debug(what.stack);
         }
 
         return 1;
+    };
+
+    if (tasks instanceof BSError) {
+        return error(tasks);
     }
 
     const complete = () => {
@@ -95,7 +99,7 @@ export const main = async (argv: string[]): Promise<number> => {
     complete();
 
     if (ret instanceof BSError) {
-        return 1;
+        return error(ret);
     }
 
     return 0;

@@ -45,3 +45,7 @@ test("option", async t => {
     const ret = await main("/usr/bin/node bs --simulate tsconfig=tsconfig.json".split(" "));
     t.is(ret, 0);
 });
+test("unknown target", async t => {
+    const ret = await main("/usr/bin/node bs foo".split(" "));
+    t.not(ret, 0);
+});

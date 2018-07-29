@@ -1,3 +1,5 @@
+import { BSError } from "./error";
+
 /**
  * Logging levels.
  */
@@ -26,9 +28,16 @@ export const setLevel = (level: Level) => {
  * @param level the log level for the created function
  * @returns a logging level for the level given in paramter
  */
-const log = (level: Level) => (message: string, ...parameters: any[]): void => {
+const log = (level: Level) => (condition: boolean | string, message?: string, ...parameters: any[]): void => {
     if (loglevel <= level) {
-        console.log(message, ...parameters);
+        if (typeof condition === "boolean") {
+            if (condition) {
+                console.log(message, ...parameters);
+            }
+        }
+        else {
+            console.log(condition, message, ...parameters);
+        }
     }
 };
 
