@@ -41,7 +41,7 @@ program
  * @param argv the startup parameters as given on the command line
  * @param done the callback once the execution is finished
  */
-export const main = async (argv: string[]): Promise<void | BSError> => {
+export const main = async (argv: string[]): Promise<number> => {
     program.parse(argv);
     const start = Date.now();
 
@@ -84,7 +84,7 @@ export const main = async (argv: string[]): Promise<void | BSError> => {
             debug(tasks.stack);
         }
 
-        throw new BSError(tasks);
+        return 1;
     }
 
     const complete = () => {
@@ -95,8 +95,8 @@ export const main = async (argv: string[]): Promise<void | BSError> => {
     complete();
 
     if (ret instanceof BSError) {
-        throw new BSError(ret);
+        return 1;
     }
 
-    return;
+    return 0;
 };

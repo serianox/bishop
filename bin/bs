@@ -1,3 +1,3 @@
 #!/usr/bin/env node
 
-require("../lib/cli").main(process.argv).then(_ => process.exit(_ instanceof BSError ? 1 : 0));
+require("../lib/cli").main(process.argv).then(process.exit);
