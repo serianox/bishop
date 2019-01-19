@@ -28,15 +28,15 @@ export const setLevel = (level: Level) => {
  * @param level the log level for the created function
  * @returns a logging level for the level given in paramter
  */
-const log = (level: Level) => (condition: boolean | string, message?: string, ...parameters: any[]): void => {
+const log = (level: Level) => (message: boolean | string, ...parameters: any[]): void => {
     if (loglevel <= level) {
-        if (typeof condition === "boolean") {
-            if (condition) {
-                console.log(message, ...parameters);
+        if (typeof message === "boolean") {
+            if (message) {
+                console.log(...parameters);
             }
         }
         else {
-            console.log(condition, message, ...parameters);
+            console.log(message, ...parameters);
         }
     }
 };
