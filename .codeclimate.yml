@@ -2,5 +2,4 @@ version: "2"
 plugins:
   tslint:
     enabled: true
-    channel: beta
     config: tslint.json
