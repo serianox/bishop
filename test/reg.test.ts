@@ -17,7 +17,7 @@ copy-bin:
 `;
     const tasks = Run.getInstance(data, ["test"], new Map<string, string>());
     t.true(tasks instanceof Run);
-    await t.notThrows((tasks as Run).go(4, false));
+    await t.notThrowsAsync((tasks as Run).go(4, false));
 });
 test("issue #16", async t => {
     const data = `
@@ -36,7 +36,7 @@ task:
 `;
     const tasks = Run.getInstance(data, ["task"], new Map<string, string>());
     t.true(tasks instanceof Run);
-    await t.notThrows((tasks as Run).go(4, false));
+    await t.notThrowsAsync((tasks as Run).go(4, false));
 });
 test("issue #20", async t => {
     const data = `
@@ -51,5 +51,5 @@ third:
 `;
     const tasks = Run.getInstance(data, ["first"], new Map<string, string>());
     t.true(tasks instanceof Run);
-    await t.notThrows((tasks as Run).go(2, false));
+    await t.notThrowsAsync((tasks as Run).go(2, false));
 });
