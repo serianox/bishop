@@ -2,7 +2,7 @@ import * as program from "commander";
 import * as os from "os";
 import * as path from "path";
 import { BSError } from "./error";
-import { Run, Task } from "./index";
+import { Run } from "./index";
 import { debug, err, info, Level, setLevel } from "./logging";
 
 /**
@@ -41,7 +41,7 @@ program
  * @param argv the startup parameters as given on the command line
  * @param done the callback once the execution is finished
  */
-export const main = (argv: string[], done: (exitCode: number) => void): void => {
+export const main = async (argv: string[]): Promise<number> => {
     program.parse(argv);
     const start = Date.now();
 
@@ -77,20 +77,30 @@ export const main = (argv: string[], done: (exitCode: number) => void): void => 
 
     const tasks = Run.getInstance(path.parse(options.file || ".bishop"), goals, args);
 
-    if (tasks instanceof BSError) {
-        err(tasks.message);
-        if (tasks.stack) {
-            debug(tasks.stack);
-        }
-        done(1);
-        return;
-    }
+    const error = (what: BSError) => {
+        err(what.message);
 
-    const complete = (exitCode: number): () => void => () => {
-        info("Completed in " + (Date.now() - start) / 1000 + "s");
-        done(exitCode);
+        if (what.stack) {
+            debug(what.stack);
+        }
+
+        return 1;
     };
 
-    tasks.go(options.jobs || os.cpus().length, options.simulate || false, complete(0), complete(1));
-    return;
+    if (tasks instanceof BSError) {
+        return error(tasks);
+    }
+
+    const complete = () => {
+        info("Completed in " + (Date.now() - start) / 1000 + "s");
+    };
+
+    const ret = await tasks.go(options.jobs || os.cpus().length, options.simulate || false);
+    complete();
+
+    if (ret instanceof BSError) {
+        return error(ret);
+    }
+
+    return 0;
 };

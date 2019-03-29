@@ -1,5 +1,0 @@
-ci:
-  type:
-    development:
-      tests:
-        unlicensed: warn
