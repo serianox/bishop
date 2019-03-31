@@ -5,7 +5,7 @@ node_js:
   - "node"
   - "lts/*"
 before_script:
-  - gpg --keyserver hkp://hkps.pool.sks-keyservers.net --recv-keys $GPG_DEV_KEY_ID
+  - gpg --keyserver pool.sks-keyservers.net --recv-keys $GPG_DEV_KEY_ID
   - git config gpg.program gpg2
 script:
   - git verify-commit `git rev-parse --verify $TRAVIS_COMMIT`
